@@ -1,0 +1,277 @@
+<?php
+$params = $this->getParameters();
+if(!empty($params)) { ?>
+	<form name="custompaymentmethod" id="add_payment" method="post" action="<?php echo $this->getUrl('ece/checkout/success/'); ?>">
+		<input type="hidden" name="orderId" value="<?php echo $params['last_order_id']; ?>">
+	</form>
+	<script>
+	require(['jquery', '<?php echo $params['mode']; ?>'], function($,ecentricjs){
+		var $form = $('#add_payment'),
+			sha256 = (function(options) {
+				return {
+					hexcase: (options && typeof options.uppercase === 'boolean') ? options.uppercase : false,
+					b64pad: (options && typeof options.pad === 'string') ? options.pad : '=',
+					utf8: (options && typeof options.utf8 === 'boolean') ? options.utf8 : true,
+					sha256_K: [
+						1116352408, 1899447441, -1245643825, -373957723, 961987163, 1508970993, -1841331548, -1424204075, -670586216, 310598401, 607225278, 1426881987,
+						1925078388, -2132889090, -1680079193, -1046744716, -459576895, -272742522,
+						264347078, 604807628, 770255983, 1249150122, 1555081692, 1996064986, -1740746414, -1473132947, -1341970488, -1084653625, -958395405, -710438585,
+						113926993, 338241895, 666307205, 773529912, 1294757372, 1396182291,
+						1695183700, 1986661051, -2117940946, -1838011259, -1564481375, -1474664885, -1035236496, -949202525, -778901479, -694614492, -200395387, 275423344,
+						430227734, 506948616, 659060556, 883997877, 958139571, 1322822218,
+						1537002063, 1747873779, 1955562222, 2024104815, -2067236844, -1933114872, -1866530822, -1538233109, -1090935817, -965641998
+					],
+
+					hex: function(s) {
+						return sha256.rstr2hex(sha256.rstr(s, sha256.utf8));
+					},
+					b64: function(s) {
+						return sha256.rstr2b64(sha256.rstr(s, sha256.utf8), sha256.b64pad);
+					},
+					any: function(s, e) {
+						return sha256.rstr2any(sha256.rstr(s, sha256.utf8), e);
+					},
+					raw: function(s) {
+						return sha256.rstr(s, sha256.utf8);
+					},
+					utf8Encode: function(str) {
+						var x, y, output = '',
+							i = -1,
+							l;
+
+						if (str && str.length) {
+							l = str.length;
+							while ((i += 1) < l) {
+								x = str.charCodeAt(i);
+								y = i + 1 < l ? str.charCodeAt(i + 1) : 0;
+								if (0xD800 <= x && x <= 0xDBFF && 0xDC00 <= y && y <= 0xDFFF) {
+									x = 0x10000 + ((x & 0x03FF) << 10) + (y & 0x03FF);
+									i += 1;
+								}
+								if (x <= 0x7F) {
+									output += String.fromCharCode(x);
+								} else if (x <= 0x7FF) {
+									output += String.fromCharCode(0xC0 | ((x >>> 6) & 0x1F),
+										0x80 | (x & 0x3F));
+								} else if (x <= 0xFFFF) {
+									output += String.fromCharCode(0xE0 | ((x >>> 12) & 0x0F),
+										0x80 | ((x >>> 6) & 0x3F),
+										0x80 | (x & 0x3F));
+								} else if (x <= 0x1FFFFF) {
+									output += String.fromCharCode(0xF0 | ((x >>> 18) & 0x07),
+										0x80 | ((x >>> 12) & 0x3F),
+										0x80 | ((x >>> 6) & 0x3F),
+										0x80 | (x & 0x3F));
+								}
+							}
+						}
+						return output;
+					},
+					safe_add: function(x, y) {
+						var lsw = (x & 0xFFFF) + (y & 0xFFFF),
+							msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+						return (msw << 16) | (lsw & 0xFFFF);
+					},
+					rstr2hex: function(input, hexcase) {
+						var hex_tab = hexcase ? '0123456789ABCDEF' : '0123456789abcdef',
+							output = '',
+							x, i = 0,
+							l = input.length;
+						for (; i < l; i += 1) {
+							x = input.charCodeAt(i);
+							output += hex_tab.charAt((x >>> 4) & 0x0F) + hex_tab.charAt(x & 0x0F);
+						}
+						return output;
+					},
+					binb2rstr: function(input) {
+						var i, l = input.length * 32,
+							output = '';
+						for (i = 0; i < l; i += 8) {
+							output += String.fromCharCode((input[i >> 5] >>> (24 - i % 32)) & 0xFF);
+						}
+						return output;
+					},
+					rstr2binb: function(input) {
+						var i, l = input.length * 8,
+							output = new Array(input.length >> 2),
+							lo = output.length;
+						for (i = 0; i < lo; i += 1) {
+							output[i] = 0;
+						}
+						for (i = 0; i < l; i += 8) {
+							output[i >> 5] |= (input.charCodeAt(i / 8) & 0xFF) << (24 - i % 32);
+						}
+						return output;
+					},
+					rstr2any: function(input, encoding) {
+						var divisor = encoding.length,
+							remainders = [],
+							i, q, x, ld, quotient, dividend, output, full_length;
+
+						dividend = new Array(Math.ceil(input.length / 2));
+						ld = dividend.length;
+						for (i = 0; i < ld; i += 1) {
+							dividend[i] = (input.charCodeAt(i * 2) << 8) | input.charCodeAt(i * 2 + 1);
+						}
+						while (dividend.length > 0) {
+							quotient = [];
+							x = 0;
+							for (i = 0; i < dividend.length; i += 1) {
+								x = (x << 16) + dividend[i];
+								q = Math.floor(x / divisor);
+								x -= q * divisor;
+								if (quotient.length > 0 || q > 0) {
+									quotient[quotient.length] = q;
+								}
+							}
+							remainders[remainders.length] = x;
+							dividend = quotient;
+						}
+
+						output = '';
+						for (i = remainders.length - 1; i >= 0; i--) {
+							output += encoding.charAt(remainders[i]);
+						}
+
+						full_length = Math.ceil(input.length * 8 / (Math.log(encoding.length) / Math.log(2)));
+						for (i = output.length; i < full_length; i += 1) {
+							output = encoding[0] + output;
+						}
+						return output;
+					},
+					rstr2b64: function(input, b64pad) {
+						var tab = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
+							output = '',
+							len = input.length,
+							i, j, triplet;
+						b64pad = b64pad || '=';
+						for (i = 0; i < len; i += 3) {
+							triplet = (input.charCodeAt(i) << 16) | (i + 1 < len ? input.charCodeAt(i + 1) << 8 : 0) | (i + 2 < len ? input.charCodeAt(i + 2) : 0);
+							for (j = 0; j < 4; j += 1) {
+								if (i * 8 + j * 6 > input.length * 8) {
+									output += b64pad;
+								} else {
+									output += tab.charAt((triplet >>> 6 * (3 - j)) & 0x3F);
+								}
+							}
+						}
+						return output;
+					},
+					rstr: function(s, utf8) {
+						s = (utf8) ? sha256.utf8Encode(s) : s;
+						return sha256.binb2rstr(sha256.binb(sha256.rstr2binb(s), s.length * 8));
+					},
+					sha256_S: function(X, n) {
+						return (X >>> n) | (X << (32 - n));
+					},
+					sha256_R: function(X, n) {
+						return (X >>> n);
+					},
+					sha256_Ch: function(x, y, z) {
+						return ((x & y) ^ ((~x) & z));
+					},
+					sha256_Maj: function(x, y, z) {
+						return ((x & y) ^ (x & z) ^ (y & z));
+					},
+					sha256_Sigma0256: function(x) {
+						return (sha256.sha256_S(x, 2) ^ sha256.sha256_S(x, 13) ^ sha256.sha256_S(x, 22));
+					},
+					sha256_Sigma1256: function(x) {
+						return (sha256.sha256_S(x, 6) ^ sha256.sha256_S(x, 11) ^ sha256.sha256_S(x, 25));
+					},
+					sha256_Gamma0256: function(x) {
+						return (sha256.sha256_S(x, 7) ^ sha256.sha256_S(x, 18) ^ sha256.sha256_R(x, 3));
+					},
+					sha256_Gamma1256: function(x) {
+						return (sha256.sha256_S(x, 17) ^ sha256.sha256_S(x, 19) ^ sha256.sha256_R(x, 10));
+					},
+					binb: function(m, l) {
+						var HASH = [1779033703, -1150833019, 1013904242, -1521486534,
+							1359893119, -1694144372, 528734635, 1541459225
+						];
+						var W = new Array(64);
+						var a, b, c, d, e, f, g, h;
+						var i, j, T1, T2;
+
+						m[l >> 5] |= 0x80 << (24 - l % 32);
+						m[((l + 64 >> 9) << 4) + 15] = l;
+
+						for (i = 0; i < m.length; i += 16) {
+							a = HASH[0];
+							b = HASH[1];
+							c = HASH[2];
+							d = HASH[3];
+							e = HASH[4];
+							f = HASH[5];
+							g = HASH[6];
+							h = HASH[7];
+
+							for (j = 0; j < 64; j += 1) {
+								if (j < 16) {
+									W[j] = m[j + i];
+								} else {
+									W[j] = sha256.safe_add(sha256.safe_add(sha256.safe_add(sha256.sha256_Gamma1256(W[j - 2]), W[j - 7]),
+										sha256.sha256_Gamma0256(W[j - 15])), W[j - 16]);
+								}
+
+								T1 = sha256.safe_add(sha256.safe_add(sha256.safe_add(sha256.safe_add(h, sha256.sha256_Sigma1256(e)), sha256.sha256_Ch(e, f, g)),
+									sha256.sha256_K[j]), W[j]);
+								T2 = sha256.safe_add(sha256.sha256_Sigma0256(a), sha256.sha256_Maj(a, b, c));
+								h = g;
+								g = f;
+								f = e;
+								e = sha256.safe_add(d, T1);
+								d = c;
+								c = b;
+								b = a;
+								a = sha256.safe_add(T1, T2);
+							}
+
+							HASH[0] = sha256.safe_add(a, HASH[0]);
+							HASH[1] = sha256.safe_add(b, HASH[1]);
+							HASH[2] = sha256.safe_add(c, HASH[2]);
+							HASH[3] = sha256.safe_add(d, HASH[3]);
+							HASH[4] = sha256.safe_add(e, HASH[4]);
+							HASH[5] = sha256.safe_add(f, HASH[5]);
+							HASH[6] = sha256.safe_add(g, HASH[6]);
+							HASH[7] = sha256.safe_add(h, HASH[7]);
+						}
+						return HASH;
+					},
+					validate: function(key, trans_id, merch_ref, result, fail_message, amount, checksum) {
+						var compare = this.hex(key + '|' + trans_id + '|' + merch_ref + '|' + result + '|' + fail_message + '|' + amount);
+						return checksum === compare.toUpperCase();
+					}
+				}
+			})();
+        $(document).ready(function() {
+            var ecentric = {
+                MerchantID 			: '<?php echo $params['merchantid']; ?>',
+                TransactionType  	: '<?php echo $params['transactiontype']; ?>',
+                Amount       		: <?php echo $params['amount']; ?>,
+                Currency  			: '<?php echo $params['currency']; ?>',
+                MerchantReference  	: '<?php echo $params['merchantreference']; ?>',
+                Checksum  			: '<?php echo $params['checksum']; ?>'
+            };
+            ecentricjs.payment(ecentric, function(data){
+                if (sha256.validate('<?php echo $params['key']; ?>', data.TransactionID, data.MerchantReference, data.Result, data.FailureMessage, data.Amount, data.Checksum)) {
+                    $form.append( '<input type="hidden" name="TransactionID" value="' + data.TransactionID + '"/>' );
+                    $form.append( '<input type="hidden" name="Result" value="' + data.Result + '"/>' );
+                    $form.append( '<input type="hidden" name="FailureMessage" value="' + data.FailureMessage + '"/>' );
+                    $form.append( '<input type="hidden" name="Checksum" value="' + data.Checksum + '"/>' );
+                    $form.submit();
+                } else {
+//					console.log('Invalid checksum');
+                }
+            }, function(data){
+                $form.append( '<input type="hidden" name="TransactionID" value="' + data.TransactionID + '"/>' );
+                $form.append( '<input type="hidden" name="Result" value="' + data.Result + '"/>' );
+                $form.append( '<input type="hidden" name="FailureMessage" value="' + data.FailureMessage + '"/>' );
+                $form.append( '<input type="hidden" name="Checksum" value="' + data.Checksum + '"/>' );
+                $form.submit();
+            });
+        });
+
+	});
+	</script>
+<?php } ?>

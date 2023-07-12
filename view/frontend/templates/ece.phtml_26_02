@@ -1,0 +1,42 @@
+<?php
+$params = $this->getParameters();
+if(!empty($params)){
+	if($params['instructions']){ ?>
+		<p><?php echo nl2br($params['instructions']); ?></p>
+	<?php } ?>
+	<h3>Payment Lightbox.</h3>
+	<form name="custompaymentmethod" id="add_payment" method="post" action="<?php echo $this->getUrl('ece/checkout/success/'); ?>">
+		<input type="hidden" name="orderId" value="<?php echo $params['last_order_id']; ?>">
+		<input type="button" id="place_order" value="Click Here" />
+	</form>
+	<style>
+	#place_order{
+		background-color: #222;
+		color: #fff;
+		padding: 1em 2em;
+		font-size: 16px;
+		border: 1px solid #222;
+	}
+	</style>
+	<script>
+	require(['jquery', 'ecentricjs'], function($,ecentricjs){
+		var $form = $('#add_payment');
+		$(document).on('click', '#place_order', function() {
+			var ecentric = {
+				MerchantID 			: '<?php echo $params['merchantid']; ?>',
+				TransactionType  	: '<?php echo $params['transactiontype']; ?>',
+				Amount       		: <?php echo $params['amount']; ?>,
+				Currency  			: '<?php echo $params['currency']; ?>',
+				MerchantReference  	: '<?php echo $params['merchantreference']; ?>',
+				Checksum  			: '<?php echo $params['checksum']; ?>',
+			};
+			ecentricjs.payment(ecentric, function(data){
+				$form.append( '<input type="hidden" name="ecentric_transaction_id" value="' + data.transaction_id + '"/>' );
+				$form.submit();
+			}, function(data){
+				$form.submit();
+			});
+		});
+	});
+	</script>
+<?php } ?>

@@ -1,0 +1,62 @@
+<?php
+namespace Ecentric\Payment\Block;
+use Magento\Framework\View\Element\Template;
+use Magento\Sales\Model\Order;
+class Ece extends \Magento\Framework\View\Element\Template
+{
+	protected $_checkoutSession;
+	protected $_orderFactory;
+	protected $_scopeConfig;
+	protected $_encryptor;
+	protected $_storeManager;
+	
+    public function __construct( \Magento\Framework\View\Element\Template\Context $context, \Magento\Checkout\Model\Session $checkoutSession, \Magento\Sales\Model\OrderFactory $orderFactory, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,  \Magento\Framework\Encryption\EncryptorInterface $encryptor, \Magento\Store\Model\StoreManagerInterface $storeManager)
+    {
+		$this->_checkoutSession = $checkoutSession;
+		$this->_orderFactory = $orderFactory;
+		$this->_scopeConfig = $scopeConfig;
+		$this->_encryptor = $encryptor;
+		$this->_storeManager = $storeManager;
+		parent::__construct($context);
+    }
+	
+    public function getParameters()
+    {
+		$last_order_id = $this->_checkoutSession->getLastRealOrder()->getIncrementId();
+		if($last_order_id){
+			$order = $this->_orderFactory->create()->loadByIncrementId($last_order_id);
+			
+			$instructions = $this->_scopeConfig->getValue('payment/ecepay/instructions', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+			
+			$ecentric_merchantid = $this->_scopeConfig->getValue('payment/ecepay/ecentric_username', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+			$ecentric_key = $this->_scopeConfig->getValue('payment/ecepay/ecentric_password', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+			
+			if($ecentric_merchantid && $ecentric_key){
+				$MerchantID = $ecentric_merchantid;
+				$Key = $ecentric_key;
+				$TransactionType = 'Payment';
+				$Amount = $order->getGrandTotal() * 100;
+				$Currency = $this->_storeManager->getStore()->getCurrentCurrency()->getCode();
+				$MerchantReference = 'order_'.$last_order_id;
+				$checksum = hash('sha256', ''.$Key.'|'.$MerchantID.'|'.$TransactionType.'|'.$Amount.'|'.$Currency.'|'.$MerchantReference.'');
+				
+				$ecentric_params = array(
+					"merchantid" 		=> $MerchantID,
+					"transactiontype" 	=> $TransactionType,
+					"amount" 			=> $Amount,
+					"currency" 			=> $Currency,
+					"merchantreference" => $MerchantReference,
+					"checksum" 			=> strtoupper($checksum),
+					"instructions" 		=> $instructions,
+					"last_order_id" 	=> $last_order_id,
+				);
+			} else {
+				$ecentric_params = array();
+			}
+		} else {
+			$ecentric_params = array();
+		}
+		return $ecentric_params;
+    }
+}
+?>
