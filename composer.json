@@ -1,0 +1,28 @@
+{
+    "name": "ecentric/module-payment",
+    "version": "1.0.0",
+    "description": "N/A",
+    "type": "magento2-module",
+    "require": {
+        "php": ">=8.1.0"
+    },
+    "license": [
+        "Proprietary"
+    ],
+    "authors": [
+        {
+            "name": "X2Y.io",
+            "email": "dev@x2y.io",
+            "homepage": "https://x2y.dev",
+            "role": "Company"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Ecentric\\Payment\\": ""
+        }
+    }
+}
