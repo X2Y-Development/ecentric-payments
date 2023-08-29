@@ -22,6 +22,7 @@ class Data extends AbstractHelper
     public const XPATH_PATTERN = 'payment/%s/general/%s';
     public const XPATH_GENERAL = 'payment/ecentric/general/';
     public const XPATH_API = 'payment/ecentic/api/';
+    public const PAYMENT_ADD_INFO_KEY = 'ecentric_payment_info';
     public const CREDENTIALS_KEYS = [
         'merchant_guid_live',
         'merchant_key_live',

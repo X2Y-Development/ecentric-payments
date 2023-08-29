@@ -13,6 +13,7 @@
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info</argument>
             <argument name="valueHandlerPool" xsi:type="object">EcentricPaymentGatewayValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">EcentricPaymentGatewayCommandPool</argument>
             <argument name="validatorPool" xsi:type="object">EcentricValidatorPool</argument>
         </arguments>
     </virtualType>
@@ -51,6 +52,15 @@
             <argument name="validators" xsi:type="array">
                 <item name="currency" xsi:type="string">Ecentric\Payment\Gateway\Validator\Currency</item>
                 <item name="country" xsi:type="string">Ecentric\Payment\Gateway\Validator\Country</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Commands Pool -->
+    <virtualType name="EcentricPaymentGatewayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="sale" xsi:type="string">Ecentric\Payment\Gateway\SaleCommand</item>
             </argument>
         </arguments>
     </virtualType>
