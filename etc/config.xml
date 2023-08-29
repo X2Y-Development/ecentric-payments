@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+/**
+ * @author     X2Y Development team <dev@x2y.io>
+ * @copyright  2023 X2Y Development team
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <ecentric>
+                <api>
+                    <mode>sandbox</mode>
+                    <merchant_guid_live backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                    <merchant_key_live backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                    <merchant_guid_sandbox backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                    <merchant_key_sandbox backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                </api>
+                <general>
+                    <active>0</active>
+                    <title>Credit Card, MasterPass, EFT, RCS</title>
+                    <subtitle>Simple, quick and easy payments.</subtitle>
+                    <new_order_status>pending</new_order_status>
+                    <show_advanced_options>0</show_advanced_options>
+                    <debug>0</debug>
+                    <allowspecific>1</allowspecific>
+                    <specificcountry>ZA</specificcountry>
+                    <currency>ZAR</currency>
+                    <is_gateway>0</is_gateway>
+                    <can_authorize>0</can_authorize>
+                    <can_capture>0</can_capture>
+                    <can_sale>1</can_sale>
+                    <can_refund>1</can_refund>
+                    <can_order>1</can_order>
+                    <is_offline>0</is_offline>
+                    <can_use_checkout>1</can_use_checkout>
+                    <can_use_internal>0</can_use_internal>
+                    <allow_multiple_address>1</allow_multiple_address>
+                </general>
+            </ecentric>
+        </payment>
+    </default>
+</config>
