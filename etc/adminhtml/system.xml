@@ -15,10 +15,11 @@
                     <field id="active" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable Solution</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <comment><![CDATA[Sign up for an account with <a href="https://secure1.ecentric.co.za/Authentication" target="_blank">Ecentric</a>.]]></comment>
+                        <comment><![CDATA[Sign up for an account with <a href="https://secure1.ecentric.co.za/Authentication" target="_blank">Ecentric</a>.<br/>When Enable Solution is set to Yes, Ecentric payment method will be available on Checkout Payments page.]]></comment>
                     </field>
-                    <field id="title" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="title" translate="label comment" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Title</label>
+                        <comment>This is the payment method title displayed to the end user on the checkout Payments section.</comment>
                         <depends>
                             <field id="active">1</field>
                         </depends>
@@ -29,26 +30,21 @@
                             <field id="active">1</field>
                         </depends>
                     </field>
-                    <field id="payment_action" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Payment Action</label>
-                        <source_model>Ecentric\Payment\Model\Config\Source\PaymentAction</source_model>
-                        <depends>
-                            <field id="active">1</field>
-                        </depends>
-                    </field>
                     <field id="new_order_status" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>New Order Status</label>
                         <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
                         <depends>
                             <field id="active">1</field>
                         </depends>
+                        <comment>Select dropdown will be rendered dynamically based on merchant configured order states.</comment>
                     </field>
-                    <field id="show_advanced_options" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="show_advanced_options" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Show Advanced Options</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <depends>
                             <field id="active">1</field>
                         </depends>
+                        <comment>When set to Yes, display standard required Magento payment options such as Payment from Applicable Countries, and Allowed Currencies</comment>
                     </field>
                     <field id="allowspecific" translate="label" type="allowspecific" sortOrder="6" showInDefault="1"  showInWebsite="1" showInStore="1">
                         <label>Payment from Applicable Countries</label>
@@ -68,13 +64,23 @@
                             <field id="allowspecific">1</field>
                         </depends>
                     </field>
-                    <field id="debug" translate="label" type="select" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="currency" translate="label" type="multiselect" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Allowed Currencies</label>
+                        <source_model>Magento\Config\Model\Config\Source\Locale\Currency</source_model>
+                        <can_be_empty>1</can_be_empty>
+                        <depends>
+                            <field id="active">1</field>
+                            <field id="show_advanced_options">1</field>
+                        </depends>
+                    </field>
+                    <field id="debug" translate="label comment" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable Debug</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <depends>
                             <field id="active">1</field>
                             <field id="show_advanced_options">1</field>
                         </depends>
+                        <comment>When Enable Debug is set to Yes, a payment log will be written to var/log/ecentric-payments.log</comment>
                     </field>
                 </group>
                 <group id="api" translate="label" type="text" sortOrder="20" showInWebsite="1" showInDefault="1" showInStore="0">
@@ -82,7 +88,7 @@
                     <field id="mode" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Mode</label>
                         <source_model>Ecentric\Payment\Model\Config\Source\Mode</source_model>
-                        <comment><![CDATA[For assistance contact <a href="mailto:support@ecentric.co.za">support@ecentric.co.za</a>.]]></comment>
+                        <comment><![CDATA[For assistance contact <a href="mailto:support@ecentric.co.za">support@ecentric.co.za</a>.</br>Depending on which option is selected, the Merchant ID and Merchant Key fields will be set separately, this way users can switch between Sandbox and Production modes without re-entering the credentials.]]></comment>
                     </field>
                     <field id="merchant_guid_live" translate="label" type="obscure" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Merchant ID</label>
