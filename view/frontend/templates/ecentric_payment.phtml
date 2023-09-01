@@ -1,0 +1,38 @@
+<?php
+/**
+ * @author     X2Y Development team <dev@x2y.io>
+ * @copyright  2023 X2Y Development team
+ */
+/**
+ * @var $block Ecentric\Payment\Block\Ecentric
+ */
+
+$formData = $block->getFormData();
+?>
+
+<?php if (!empty($formData)) : ?>
+    <form method="post" id="ecentric_payment" action="https://sandbox.ecentric.co.za/HPP">
+        <input type="hidden" name="MerchantID" value="<?= $formData['merchant_id'] ?>">
+        <input type="hidden" name="TransactionType" value="<?= $formData['transaction_type'] ?>">
+        <input type="hidden" name="MerchantReference" value="<?= $formData['merchant_reference'] ?>">
+        <input type="hidden" name="Amount" value="<?= $formData['amount'] ?>">
+        <input type="hidden" name="Currency" value="<?= $formData['currency'] ?>">
+        <input type="hidden" name="Checksum" value="<?= $formData['checksum'] ?>">
+    </form>
+    <script>
+        require([
+            'jQuery'
+        ], function ($) {
+            var form = $('#ecentric_payment');
+            $(document).ready(function () {
+                window.hpp.payment(form,
+                    //successCallbackFn
+                    function () {
+
+                    }, /* failureCallbackFn */ function () {
+
+                    });
+            });
+        });
+    </script>
+<?php endif; ?>

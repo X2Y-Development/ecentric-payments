@@ -23,12 +23,6 @@ class Data extends AbstractHelper
     public const XPATH_GENERAL = 'payment/ecentric/general/';
     public const XPATH_API = 'payment/ecentic/api/';
     public const PAYMENT_ADD_INFO_KEY = 'ecentric_payment_info';
-    public const CREDENTIALS_KEYS = [
-        'merchant_guid_live',
-        'merchant_key_live',
-        'merchant_guid_sandbox',
-        'merchant_key_sandbox',
-    ];
 
     /**
      * @param Context $context
@@ -36,8 +30,8 @@ class Data extends AbstractHelper
      * @param StoreManagerInterface $storeManager
      */
     public function __construct(
-        Context $context,
-        private EncryptorInterface $encryptor,
+        Context                       $context,
+        private EncryptorInterface    $encryptor,
         private StoreManagerInterface $storeManager
     ) {
         parent::__construct($context);
@@ -68,12 +62,62 @@ class Data extends AbstractHelper
      */
     public function getApiGroupInfo(string $path, string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): mixed
     {
-        $value = $this->scopeConfig->getValue(self::XPATH_API . $path, $scope);
-        if (in_array($path, self::CREDENTIALS_KEYS)) {
-            return $this->encryptor->decrypt($value);
+        return $this->scopeConfig->getValue(self::XPATH_API . $path, $scope);
+    }
+
+    /**
+     * @param string $scope
+     * @return string
+     */
+    public function getMerchantId(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
+    {
+        if ($this->getApiMode() === 'sandbox') {
+            $merchantId = $this->getApiGroupInfo('merchant_guid_sandbox', $scope);
+
+            return $this->encryptor->decrypt($merchantId);
         }
 
-        return $value;
+        $merchantId = $this->getApiGroupInfo('merchant_guid_live', $scope);
+
+        return $this->encryptor->decrypt($merchantId);
+    }
+
+    /**
+     * @param string $scope
+     * @return string
+     */
+    public function getMerchantKey(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
+    {
+        if ($this->getApiMode() === 'sandbox') {
+            $merchantId = $this->getApiGroupInfo('merchant_key_sandbox', $scope);
+
+            return $this->encryptor->decrypt($merchantId);
+        }
+
+        $merchantId = $this->getApiGroupInfo('merchant_key_live', $scope);
+
+        return $this->encryptor->decrypt($merchantId);
+    }
+
+    /**
+     * Check if credentials set and payment method enabled
+     *
+     * @return bool
+     * @throws NoSuchEntityException
+     */
+    public function isActiveModule(): bool
+    {
+        return $this->getGeneralGroupInfo('active', '', $this->storeManager->getStore()->getId())
+            && $this->isActiveMode();
+    }
+
+    /**
+     * @param string $scope
+     * @return string
+     */
+    public function getApiMode(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
+    {
+        return (string)$this->getApiGroupInfo('mode', $scope);
     }
 
     /**
@@ -89,5 +133,13 @@ class Data extends AbstractHelper
             ScopeInterface::SCOPE_STORE,
             $this->storeManager->getStore()->getId()
         );
+    }
+
+    /**
+     * @return bool
+     */
+    private function isActiveMode(): bool
+    {
+        return $this->getMerchantId() && $this->getMerchantKey();
     }
 }

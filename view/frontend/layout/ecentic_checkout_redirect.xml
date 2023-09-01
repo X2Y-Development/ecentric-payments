@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author     X2Y Development team <dev@x2y.io>
+ * @copyright  2023 X2Y Development team
+ */
+ -->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <script src="https://sandbox.test.co.za/HPP/API/js" src_type="url"/>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <block class="Ecentric\Payment\Block\Ecentric"
+                   name="ecentric.payment"
+                   template="ecentric_payment.phtml"
+                   ifconfig="payment/ecentric/general/active"
+                   cacheable="false" />
+        </referenceContainer>
+    </body>
+</page>

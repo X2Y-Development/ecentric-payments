@@ -90,28 +90,28 @@
                         <source_model>Ecentric\Payment\Model\Config\Source\Mode</source_model>
                         <comment><![CDATA[For assistance contact <a href="mailto:support@ecentric.co.za">support@ecentric.co.za</a>.</br>Depending on which option is selected, the Merchant ID and Merchant Key fields will be set separately, this way users can switch between Sandbox and Production modes without re-entering the credentials.]]></comment>
                     </field>
-                    <field id="merchant_guid_live" translate="label" type="obscure" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <field id="merchant_guid_live" translate="label" type="obscure" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Merchant ID</label>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                         <depends>
                             <field id="mode">production</field>
                         </depends>
                     </field>
-                    <field id="merchant_key_live" translate="label" type="obscure" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <field id="merchant_key_live" translate="label" type="obscure" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Merchant Key</label>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                         <depends>
                             <field id="mode">production</field>
                         </depends>
                     </field>
-                    <field id="merchant_guid_sandbox" translate="label" type="obscure" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <field id="merchant_guid_sandbox" translate="label" type="obscure" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Merchant ID Sandbox</label>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                         <depends>
                             <field id="mode">sandbox</field>
                         </depends>
                     </field>
-                    <field id="merchant_key_sandbox" translate="label" type="obscure" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <field id="merchant_key_sandbox" translate="label" type="obscure" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
                         <label>Merchant Key Sandbox</label>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                         <depends>
