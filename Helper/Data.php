@@ -30,8 +30,8 @@ class Data extends AbstractHelper
      * @param StoreManagerInterface $storeManager
      */
     public function __construct(
-        Context                       $context,
-        private EncryptorInterface    $encryptor,
+        Context $context,
+        private EncryptorInterface $encryptor,
         private StoreManagerInterface $storeManager
     ) {
         parent::__construct($context);
