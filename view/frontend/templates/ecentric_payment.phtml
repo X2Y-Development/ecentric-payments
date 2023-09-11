@@ -12,12 +12,12 @@ $formData = $block->getFormData();
 
 <?php if (!empty($formData)) : ?>
     <form method="post" id="ecentric_payment" action="<?= $block->getRedirectUrl() ?>">
-        <input type="text" name="MerchantID" value="<?= $formData['merchant_id'] ?>">
-        <input type="text" name="TransactionType" value="<?= $formData['transaction_type'] ?>">
-        <input type="text" name="MerchantReference" value="<?= $formData['merchant_reference'] ?>">
-        <input type="text" name="Amount" value="<?= $formData['amount'] ?>">
-        <input type="text" name="Currency" value="<?= $formData['currency'] ?>">
-        <input type="text" name="Checksum" value="<?= $formData['checksum'] ?>">
+        <input type="hidden" name="MerchantID" value="<?= $formData['merchant_id'] ?>">
+        <input type="hidden" name="TransactionType" value="<?= $formData['transaction_type'] ?>">
+        <input type="hidden" name="MerchantReference" value="<?= $formData['merchant_reference'] ?>">
+        <input type="hidden" name="Amount" value="<?= $formData['amount'] ?>">
+        <input type="hidden" name="Currency" value="<?= $formData['currency'] ?>">
+        <input type="hidden" name="Checksum" value="<?= $formData['checksum'] ?>">
     </form>
     <script>
         require([
