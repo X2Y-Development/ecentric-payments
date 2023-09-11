@@ -1,0 +1,16 @@
+<!--
+/**
+ * @author     X2Y Development team <dev@x2y.io>
+ * @copyright  2023 X2Y Development team
+ */
+-->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp/etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="sandbox_ecentric_co_za" type="host">sandbox.ecentric.co.za</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

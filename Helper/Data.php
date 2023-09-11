@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Ecentric\Payment\Helper;
 
+use Ecentric\Payment\Model\Config\Source\Mode;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
@@ -23,7 +24,8 @@ class Data extends AbstractHelper
     public const XPATH_GENERAL = 'payment/ecentric/general/';
     public const XPATH_API = 'payment/ecentic/api/';
     public const PAYMENT_ADD_INFO_KEY = 'ecentric_payment_info';
-
+    public const HPP_LIVE = 'https://sandbox.ecentric.co.za/HPP'; // @TODO: get correct LIVE url!
+    public const HPP_TEST = 'https://sandbox.ecentric.co.za/HPP';
     /**
      * @param Context $context
      * @param EncryptorInterface $encryptor
@@ -141,5 +143,10 @@ class Data extends AbstractHelper
     private function isActiveMode(): bool
     {
         return $this->getMerchantId() && $this->getMerchantKey();
+    }
+
+    public function getApiUrl(): string
+    {
+        return ($this->getApiMode() == Mode::PRODUCTION) ? self::HPP_LIVE : self::HPP_TEST;
     }
 }

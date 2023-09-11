@@ -70,4 +70,12 @@ class Ecentric extends Template
 
         return [];
     }
+
+    /**
+     * @return string
+     */
+    public function getRedirectUrl(): string
+    {
+        return $this->ecentricHelper->getApiUrl();
+    }
 }

@@ -37,6 +37,7 @@
                     <can_use_internal>0</can_use_internal>
                     <allow_multiple_address>1</allow_multiple_address>
                 </general>
+                <model>EcentricPaymentGatewayFacade</model>
             </ecentric>
         </payment>
     </default>
