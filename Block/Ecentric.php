@@ -57,14 +57,12 @@ class Ecentric extends Template
                 . '|' . $merchantRef);
 
             return [
-                "merchant_id" => $merchantId,
-                "transaction_type" => $transactionType,
-                "merchant_reference" => $merchantRef,
-                "amount" => $amount,
-                "currency" => $currency,
-                "checksum" => strtoupper($checksum),
-                "last_order_id" => $lastOrderId,
-                "mode" => $this->ecentricHelper->getApiMode(),
+                'MerchantID'        => $merchantId,
+                'TransactionType'   => $transactionType,
+                'MerchantReference' => $merchantRef,
+                'Amount'            => $amount,
+                'Currency'          => $currency,
+                'Checksum'          => strtoupper($checksum)
             ];
         }
 
