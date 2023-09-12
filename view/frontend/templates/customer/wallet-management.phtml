@@ -1,0 +1,23 @@
+<?php
+use Ecentric\Payment\Block\Customer\WalletManagement;
+use Magento\Framework\Escaper;
+
+/**
+ * @author     X2Y Development team <dev@x2y.io>
+ * @copyright  2023 X2Y Development team
+ */
+/** @var $escaper Escaper */
+/** @var $block WalletManagement */
+
+$formParameters = $block->getWalletParameters();
+?>
+<?php if ($formParameters) : ?>
+    <form action="<?= $escaper->escapeUrl($block->getWalletManagementUrl()); ?>" method="post" target="_blank">
+        <?php foreach ($formParameters as $name => $value): ?>
+            <input type="hidden" name="<?= $name; ?>" value="<?= $value; ?>">
+        <?php endforeach; ?>
+        <button type="submit" class="action primary"><?= __('Manage Your Wallet') ?></button>
+    </form>
+<?php endif; ?>
+
+
