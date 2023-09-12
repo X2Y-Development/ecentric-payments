@@ -1,0 +1,17 @@
+/**
+ * @author     X2Y Development team <dev@x2y.io>
+ * @copyright  2023 X2Y Development team
+ */
+
+.ecentric-payment-section .heading {
+    background: url(../images/logo.jpg) no-repeat 0 50% / 18rem auto;
+    padding-left: 20rem;
+}
+
+.ecentric-payment-section .button-container {
+    float: right;
+}
+
+.ecentric-payment-section.with-button .config-heading .version strong {
+    display: inline-block;
+}
