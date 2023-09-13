@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author     X2Y Development team <dev@x2y.io>
+ * @copyright  2023 X2Y Development team
+ */
+ -->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="ecentric_payment_web_hooks" resource="default" engine="innodb" comment="PeachPayments Hosted table">
+        <column xsi:type="int" name="entity_id" padding="11" unsigned="false" nullable="false" identity="true" comment="Identifier"/>
+        <column xsi:type="varchar" name="request_type" nullable="false" length="25" comment="Request Type"/>
+        <column xsi:type="varchar" name="merchant_id" nullable="true" length="255" comment="Merchant ID"/>
+        <column xsi:type="varchar" name="card_acceptor_id" nullable="true" length="255" comment="Card Acceptor ID"/>
+        <column xsi:type="varchar" name="transaction_id" nullable="true" length="255" comment="Transcation ID"/>
+        <column xsi:type="timestamp" name="transaction_timestamp" on_update="false" nullable="false" comment="Transaction Timestamp"/>
+        <column xsi:type="varchar" name="reconciliation_id" nullable="true" length="255" comment="Reconciliation ID"/>
+        <column xsi:type="decimal" name="amount" scale="6" precision="20" unsigned="false" nullable="false" default="0" comment="Amount payable"/>
+        <column xsi:type="varchar" name="currency_code" nullable="false" length="3" comment="Currency Code"/>
+        <column xsi:type="int" name="order_id" nullable="false" padding="11" comment="Order identifier"/>
+        <column xsi:type="varchar" name="payment_service" nullable="true" length="255" comment="Payment Service"/>
+        <column xsi:type="varchar" name="auth_code" nullable="true" length="255" comment="Authentication Code"/>
+        <column xsi:type="varchar" name="transaction_status" nullable="true" length="255" comment="Transaction Status"/>
+        <column xsi:type="varchar" name="response_source" nullable="true" length="255" comment="Response Source"/>
+        <column xsi:type="varchar" name="response_code" nullable="true" length="255" comment="Response Code"/>
+        <column xsi:type="varchar" name="masked_card_number" nullable="true" length="255" comment="Masked Card Number"/>
+        <column xsi:type="varchar" name="expiry_month" nullable="true" length="255" comment="Expiry Month"/>
+        <column xsi:type="varchar" name="expiry_year" nullable="true" length="255" comment="Expiry Year"/>
+        <column xsi:type="varchar" name="systems_trace_audit_number" nullable="true" length="255" comment="Systems Trace Audit Number"/>
+        <column xsi:type="varchar" name="sale_reconciliation_id" nullable="true" length="255" comment="Sale Reconciliation ID"/>
+        <column xsi:type="varchar" name="retrieval_reference_number" nullable="true" length="255" comment="Retrieval Reference Number"/>
+        <column xsi:type="varchar" name="comm_protocol" nullable="true" length="255" comment="Communication Protocol"/>
+        <column xsi:type="varchar" name="initial_auth_ref" nullable="true" length="255" comment="Retrieval Reference Number"/>
+        <column xsi:type="blob" name="request" nullable="true" comment="Full Request"/>
+        <column xsi:type="timestamp" name="created_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At Time"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+    </table>
+</schema>
