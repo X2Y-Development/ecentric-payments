@@ -8,20 +8,20 @@ declare(strict_types=1);
 namespace Ecentric\Payment\Logger;
 
 use DateTimeZone;
-use Ecentric\Payment\Helper\Data as EcentricHelper;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Monolog\Logger as MonologLogger;
 
 class Logger extends MonologLogger
 {
     /**
-     * @param EcentricHelper $ecentricHelper
      * @param string $name
+     * @param ScopeConfigInterface $scopeConfig
      * @param array $handlers
      * @param array $processors
      * @param DateTimeZone|null $timezone
      */
     public function __construct(
-        private EcentricHelper $ecentricHelper,
+        private ScopeConfigInterface $scopeConfig,
         string $name,
         array $handlers = [],
         array $processors = [],
@@ -33,11 +33,12 @@ class Logger extends MonologLogger
     /**
      * @param string $message
      * @param array $context
+     * @param bool $isDebug
      * @return void
      */
-    public function debug($message, array $context = []): void
+    public function debug($message, array $context = [], bool $isDebug = false): void
     {
-        if ($this->ecentricHelper->getGeneralGroupInfo('debug')) {
+        if ($this->scopeConfig->isSetFlag('payment/ecentric/general/debug')) {
             parent::debug($message, $context);
         }
     }
@@ -45,11 +46,12 @@ class Logger extends MonologLogger
     /**
      * @param string $message
      * @param array $context
+     * @param bool $isDebug
      * @return void
      */
-    public function error($message, array $context = []): void
+    public function error($message, array $context = [], bool $isDebug = false): void
     {
-        if ($this->ecentricHelper->getGeneralGroupInfo('debug')) {
+        if ($this->scopeConfig->isSetFlag('payment/ecentric/general/debug')) {
             parent::error($message, $context);
         }
     }
