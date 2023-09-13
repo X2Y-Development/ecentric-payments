@@ -4,6 +4,7 @@
  * @copyright  2023 X2Y Development team
  */
 /**
+ * @var $escaper Magento\Framework\Escaper
  * @var $block Ecentric\Payment\Block\Ecentric
  */
 
@@ -11,20 +12,12 @@ $formData = $block->getFormData();
 ?>
 
 <?php if (!empty($formData)) : ?>
-    <form method="post" id="ecentric_payment" action="<?= $block->getRedirectUrl() ?>">
-        <input type="hidden" name="MerchantID" value="<?= $formData['merchant_id'] ?>">
-        <input type="hidden" name="TransactionType" value="<?= $formData['transaction_type'] ?>">
-        <input type="hidden" name="MerchantReference" value="<?= $formData['merchant_reference'] ?>">
-        <input type="hidden" name="Amount" value="<?= $formData['amount'] ?>">
-        <input type="hidden" name="Currency" value="<?= $formData['currency'] ?>">
-        <input type="hidden" name="Checksum" value="<?= $formData['checksum'] ?>">
+    <form method="post" id="ecentric_payment" action="<?= $escaper->escapeUrl($block->getRedirectUrl()); ?>">
+        <?php foreach ($formData as $name => $value): ?>
+            <input type="hidden" name="<?= $name ?>" value="<?= $value ?>">
+        <?php endforeach; ?>
     </form>
     <script>
-        require([
-            'jquery'
-        ], function ($) {
-            $('#ecentric_payment').submit();
-
-        });
+        document.getElementById('ecentric_payment').submit();
     </script>
 <?php endif; ?>

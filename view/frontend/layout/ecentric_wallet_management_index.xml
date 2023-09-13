@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author     X2Y Development team <dev@x2y.io>
+ * @copyright  2023 X2Y Development team
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="customer_account"/>
+    <body>
+        <referenceBlock name="page.main.title">
+            <action method="setPageTitle">
+                <argument translate="true" name="title" xsi:type="string">Wallet Management</argument>
+            </action>
+        </referenceBlock>
+
+        <referenceContainer name="content">
+            <block class="Ecentric\Payment\Block\Customer\WalletManagement"
+                   name="customer.ecentric.wallet.management"
+                   template="Ecentric_Payment::customer/wallet-management.phtml"
+                   cacheable="false" />
+        </referenceContainer>
+    </body>
+</page>
