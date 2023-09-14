@@ -1,4 +1,10 @@
 <?php
+/**
+ * @author     X2Y Development team <dev@x2y.io>
+ * @copyright  2023 X2Y Development team
+ */
+
+declare(strict_types=1);
 
 namespace Ecentric\Payment\Controller;
 
@@ -9,7 +15,6 @@ use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Response\RedirectInterface;
 use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Serialize\SerializerInterface;
 
 abstract class Payment implements CsrfAwareActionInterface

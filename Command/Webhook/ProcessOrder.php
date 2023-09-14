@@ -1,29 +1,35 @@
 <?php
+/**
+ * @author     X2Y Development team <dev@x2y.io>
+ * @copyright  2023 X2Y Development team
+ */
+
+declare(strict_types=1);
 
 namespace Ecentric\Payment\Command\Webhook;
 
 use Ecentric\Payment\Helper\Data as EcentricHelper;
+use Ecentric\Payment\Logger\Logger as EcentricLogger;
 use Ecentric\Payment\Model\Web\Hook;
 use Ecentric\Payment\Model\Web\HookFactory;
 use Ecentric\Payment\Model\ResourceModel\Web\Hook as ResourceHooks;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
 
 class ProcessOrder
 {
     /**
-     * @param OrderRepositoryInterface $orderRepository
      * @param HookFactory $webhookFactory
      * @param ResourceHooks $hookResource
      * @param EcentricHelper $ecentricHelper
      * @param SerializerInterface $serializer
+     * @param EcentricLogger $ecentricLogger
      */
     public function __construct(
-        private OrderRepositoryInterface $orderRepository,
         private HookFactory $webhookFactory,
         private ResourceHooks $hookResource,
         private EcentricHelper $ecentricHelper,
-        private SerializerInterface $serializer
+        private SerializerInterface $serializer,
+        private EcentricLogger $ecentricLogger
     ) {
     }
 
@@ -34,6 +40,7 @@ class ProcessOrder
     public function execute(array $content): void
     {
         if ($content['TransactionStatus'] === 'Success') {
+            $this->ecentricLogger->debug('Response from Ecentric (Test)' . $this->serializer->serialize($content));
             $hook = $this->setWebHookData($content);
             $this->hookResource->save($hook);
             $this->ecentricHelper->processOrder($hook);
@@ -46,6 +53,7 @@ class ProcessOrder
      */
     private function setWebHookData(array $content): Hook
     {
+        /** @var Hook $webhook */
         $webhook = $this->webhookFactory->create();
 
         $webhook->setRequestType($content['RequestType'] ?? '');

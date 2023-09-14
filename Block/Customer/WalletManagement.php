@@ -23,11 +23,10 @@ class WalletManagement extends Template
      */
     public function __construct(
         protected EcentricHelper $ecentricHelper,
-        protected Session        $customerSession,
-        Context                  $context,
-        array                    $data = []
-    )
-    {
+        protected Session $customerSession,
+        Context $context,
+        array $data = []
+    ) {
         parent::__construct($context, $data);
     }
 

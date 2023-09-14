@@ -4,6 +4,8 @@
  * @copyright  2023 X2Y Development team
  */
 
+declare(strict_types=1);
+
 namespace Ecentric\Payment\Block\Adminhtml\System\Config\Fieldset;
 
 use Magento\Backend\Block\Context;
@@ -25,14 +27,13 @@ class Payment extends Fieldset
      * @param array $data
      */
     public function __construct(
-        Context                      $context,
-        Session                      $authSession,
-        Js                           $jsHelper,
+        Context $context,
+        Session $authSession,
+        Js $jsHelper,
         protected SecureHtmlRenderer $secureRenderer,
-        protected PackageInfo        $packageInfo,
-        array                        $data = []
-    )
-    {
+        protected PackageInfo $packageInfo,
+        array $data = []
+    ) {
         parent::__construct($context, $authSession, $jsHelper, $data, $secureRenderer);
     }
 

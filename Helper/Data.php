@@ -16,7 +16,6 @@ use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\DB\Transaction;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -214,28 +213,22 @@ class Data extends AbstractHelper
 
                     $payment->pay($invoice);
 
-//                    foreach ($order->getInvoiceCollection() as $invoice) {
-//                        if ($invoice) {
-//                            $order->addRelatedObject($invoice);
-//                            $order->addCommentToStatusHistory(__('You notified customer about invoice #%1.', $invoice->getIncrementId()))
-//                                ->setIsCustomerNotified(true);
-//                            $this->orderRepository->save($order);
-//                        }
-//                    }
-
                     $this->orderRepository->save($order);
 
-                    // dispatch event to say order succeeded
                     $this->eventManager->dispatch('ecentric_payment_order_succeed', ['result' => $hook]);
                 } catch (Exception $e) {
-                    $this->logger->debug(__('Error had happen while order processing. Exception: %1', $e->getMessage()));
+                    $this->logger->debug(
+                        __('Error had happen while order processing. Exception: %1', $e->getMessage())
+                    );
                 }
 
                 return true;
             }
         } else {
-            $this->logger->debug('Cancelling order id: ' . $order->getId());
-            $order->addCommentToStatusHistory(__('Transaction failure, will canceled via cron'));
+            $this->logger->debug(__('Transaction failure, order id: %1', $order->getId()));
+            $order->addCommentToStatusHistory(
+                __('Transaction failure. Order will be canceled automatically by cron')
+            );
             $this->orderRepository->save($order);
         }
 
