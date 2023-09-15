@@ -16,14 +16,12 @@ use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use Magento\Framework\DB\Transaction;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
-use Magento\Sales\Model\Service\InvoiceService;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
@@ -45,8 +43,6 @@ class Data extends AbstractHelper
      * @param EcentricLogger $logger
      * @param Session $checkoutSession
      * @param CartRepositoryInterface $quoteRepository
-     * @param InvoiceService $invoiceService
-     * @param Transaction $transaction
      */
     public function __construct(
         Context $context,
@@ -55,9 +51,7 @@ class Data extends AbstractHelper
         private OrderRepositoryInterface $orderRepository,
         private EcentricLogger $logger,
         private Session $checkoutSession,
-        private CartRepositoryInterface $quoteRepository,
-        private InvoiceService $invoiceService,
-        private Transaction $transaction
+        private CartRepositoryInterface $quoteRepository
     ) {
         parent::__construct($context);
     }
@@ -190,6 +184,13 @@ class Data extends AbstractHelper
 
                     $order->addCommentToStatusHistory(__('Approved payment online in Ecentric.'), false, true);
 
+                    $this->setLastDataToSession(
+                        (int)$order->getQuoteId(),
+                        (int)$order->getId(),
+                        $order->getIncrementId(),
+                        $order->getStatus()
+                    );
+
                     $this->orderRepository->save($order);
 
                     $this->eventManager->dispatch('ecentric_payment_order_succeed', ['result' => $hook]);
@@ -230,5 +231,26 @@ class Data extends AbstractHelper
             }
         }
         return false;
+    }
+
+    /**
+     * @param int $quoteId
+     * @param int $orderId
+     * @param string $orderIncrementId
+     * @param string $orderStatus
+     * @return void
+     */
+    private function setLastDataToSession(
+        int $quoteId,
+        int $orderId,
+        string $orderIncrementId,
+        string $orderStatus
+    ): void {
+        $this->checkoutSession->setLastQuoteId($quoteId);
+        $this->checkoutSession->setLastSuccessQuoteId($quoteId);
+        $this->checkoutSession->clearHelperData();
+        $this->checkoutSession->setLastOrderId($orderId);
+        $this->checkoutSession->setLastRealOrderId($orderIncrementId);
+        $this->checkoutSession->setLastOrderStatus($orderStatus);
     }
 }
