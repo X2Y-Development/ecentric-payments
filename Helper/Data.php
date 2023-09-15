@@ -184,34 +184,11 @@ class Data extends AbstractHelper
         if ($hook->getTransactionStatus() === 'Success') {
             if ($order instanceof Order && $payment instanceof Payment) {
                 try {
-                    if (in_array($order->getState(), [Order::STATE_PENDING_PAYMENT, Order::STATE_NEW])) {
-                        $order->setState(Order::STATE_PROCESSING)
-                            ->setStatus($order->getConfig()->getStateDefaultStatus(Order::STATE_PROCESSING))
-                            ->addCommentToStatusHistory(__('Approved payment online at Ecentric.'));
-                    }
-
-                    if ($order->canInvoice()) {
-                        $invoice = $this->invoiceService->prepareInvoice($order);
-                        $invoice->register();
-                        $invoice->save();
-
-                        $transactionSave =
-                            $this->transaction
-                                ->addObject($invoice)
-                                ->addObject($invoice->getOrder());
-                        $transactionSave->save();
-
-                        $order->addCommentToStatusHistory(
-                            __('Notified customer about invoice creation #%1.', $invoice->getId())
-                        )->setIsCustomerNotified(true);
-                    }
-
                     $payment->setData('transaction_id', $hook->getData('transaction_id'));
-                    $payment->registerCaptureNotification($hook->getData('amount'), true);
                     $payment->setAdditionalInformation('ecentric_request', $hook->getData('request'));
-                    $payment->setMethod(self::METHOD_CODE);
+                    $payment->registerCaptureNotification($hook->getData('amount'), true);
 
-                    $payment->pay($invoice);
+                    $order->addCommentToStatusHistory(__('Approved payment online in Ecentric.'), false, true);
 
                     $this->orderRepository->save($order);
 

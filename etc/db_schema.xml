@@ -8,11 +8,11 @@
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
     <table name="ecentric_payment_web_hooks" resource="default" engine="innodb" comment="PeachPayments Hosted table">
         <column xsi:type="int" name="entity_id" padding="11" unsigned="false" nullable="false" identity="true" comment="Identifier"/>
-        <column xsi:type="varchar" name="request_type" nullable="false" length="25" comment="Request Type"/>
+        <column xsi:type="varchar" name="request_type" nullable="true" length="25" comment="Request Type"/>
         <column xsi:type="varchar" name="merchant_id" nullable="true" length="255" comment="Merchant ID"/>
         <column xsi:type="varchar" name="card_acceptor_id" nullable="true" length="255" comment="Card Acceptor ID"/>
         <column xsi:type="varchar" name="transaction_id" nullable="true" length="255" comment="Transcation ID"/>
-        <column xsi:type="timestamp" name="transaction_timestamp" on_update="false" nullable="false" comment="Transaction Timestamp"/>
+        <column xsi:type="timestamp" name="transaction_timestamp" on_update="false" nullable="true" comment="Transaction Timestamp"/>
         <column xsi:type="varchar" name="reconciliation_id" nullable="true" length="255" comment="Reconciliation ID"/>
         <column xsi:type="decimal" name="amount" scale="6" precision="20" unsigned="false" nullable="false" default="0" comment="Amount payable"/>
         <column xsi:type="varchar" name="currency_code" nullable="false" length="3" comment="Currency Code"/>

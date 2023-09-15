@@ -66,12 +66,12 @@
     </virtualType>
 
     <!-- Custom debug log  -->
-    <virtualType name="DebugLoggerHandler" type="Magento\Framework\Logger\Handler\Base">
+    <virtualType name="EcentricPaymentDebugLoggerHandler" type="Magento\Framework\Logger\Handler\Base">
         <arguments>
             <argument name="fileName" xsi:type="string">/var/log/ecentric_payment.log</argument>
         </arguments>
     </virtualType>
-    <virtualType name="ErrorLoggerHandler" type="Magento\Framework\Logger\Handler\System">
+    <virtualType name="EcentricPaymentErrorLoggerHandler" type="Magento\Framework\Logger\Handler\System">
         <arguments>
             <argument name="fileName" xsi:type="string">/var/log/ecentric_payment.log</argument>
         </arguments>
@@ -79,9 +79,9 @@
     <type name="Ecentric\Payment\Logger\Logger">
         <arguments>
             <argument name="name" xsi:type="string">EcentricPaymentLogger</argument>
-            <argument name="handlers"  xsi:type="array">
-                <item name="debug" xsi:type="object">DebugLoggerHandler</item>
-                <item name="error" xsi:type="object">ErrorLoggerHandler</item>
+            <argument name="handlers" xsi:type="array">
+                <item name="debug" xsi:type="object">EcentricPaymentDebugLoggerHandler</item>
+                <item name="error" xsi:type="object">EcentricPaymentErrorLoggerHandler</item>
             </argument>
         </arguments>
     </type>

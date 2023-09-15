@@ -10,11 +10,14 @@ namespace Ecentric\Payment\Controller;
 
 use Ecentric\Payment\Command\Webhook\ProcessOrder;
 use Ecentric\Payment\Helper\Data as EcentricHelper;
+use Ecentric\Payment\Logger\Logger as EcentricLogger;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Response\RedirectInterface;
 use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 
 abstract class Payment implements CsrfAwareActionInterface
@@ -26,6 +29,8 @@ abstract class Payment implements CsrfAwareActionInterface
      * @param ProcessOrder $processOrder
      * @param RedirectInterface $redirect
      * @param EcentricHelper $ecentricHelper
+     * @param EcentricLogger $ecentricLogger
+     * @param ResultFactory $resultFactory
      */
     public function __construct(
         protected RequestInterface $request,
@@ -33,7 +38,9 @@ abstract class Payment implements CsrfAwareActionInterface
         protected ResponseInterface $response,
         protected ProcessOrder $processOrder,
         protected RedirectInterface $redirect,
-        protected EcentricHelper $ecentricHelper
+        protected EcentricHelper $ecentricHelper,
+        protected EcentricLogger $ecentricLogger,
+        protected ResultFactory $resultFactory
     ) {
     }
 
@@ -56,13 +63,13 @@ abstract class Payment implements CsrfAwareActionInterface
     }
 
     /**
-     * @param $path
-     * @return ResponseInterface|null
+     * @param string $path
+     * @return ResultInterface
      */
-    public function redirect($path): ?ResponseInterface
+    public function redirect(string $path): ResultInterface
     {
-        $this->redirect->redirect($this->response, $path);
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
 
-        return $this->response;
+        return $resultRedirect->setPath($path, ['_secure' => true]);
     }
 }

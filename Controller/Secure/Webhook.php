@@ -18,7 +18,9 @@ class Webhook extends AbstractPayment
      */
     public function execute(): ResponseInterface
     {
+        $this->ecentricLogger->debug('Webhook Ecentric ' . $this->request->getContent());
         $content = $this->serializer->unserialize($this->request->getContent());
+        $content['request'] = $this->request->getContent();
 
         if (strlen($content) > 0) {
             $this->processOrder->execute($content);

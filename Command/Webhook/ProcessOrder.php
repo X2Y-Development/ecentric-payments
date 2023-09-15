@@ -9,11 +9,9 @@ declare(strict_types=1);
 namespace Ecentric\Payment\Command\Webhook;
 
 use Ecentric\Payment\Helper\Data as EcentricHelper;
-use Ecentric\Payment\Logger\Logger as EcentricLogger;
 use Ecentric\Payment\Model\Web\Hook;
 use Ecentric\Payment\Model\Web\HookFactory;
 use Ecentric\Payment\Model\ResourceModel\Web\Hook as ResourceHooks;
-use Magento\Framework\Serialize\SerializerInterface;
 
 class ProcessOrder
 {
@@ -21,15 +19,11 @@ class ProcessOrder
      * @param HookFactory $webhookFactory
      * @param ResourceHooks $hookResource
      * @param EcentricHelper $ecentricHelper
-     * @param SerializerInterface $serializer
-     * @param EcentricLogger $ecentricLogger
      */
     public function __construct(
         private HookFactory $webhookFactory,
         private ResourceHooks $hookResource,
         private EcentricHelper $ecentricHelper,
-        private SerializerInterface $serializer,
-        private EcentricLogger $ecentricLogger
     ) {
     }
 
@@ -40,7 +34,6 @@ class ProcessOrder
     public function execute(array $content): void
     {
         if ($content['TransactionStatus'] === 'Success') {
-            $this->ecentricLogger->debug('Response from Ecentric (Test)' . $this->serializer->serialize($content));
             $hook = $this->setWebHookData($content);
             $this->hookResource->save($hook);
             $this->ecentricHelper->processOrder($hook);
@@ -78,7 +71,7 @@ class ProcessOrder
         $webhook->setRetrievalReferenceNumber($content['RetrievalReferenceNumber'] ?? '');
         $webhook->setCommProtocol($content['CommProtocol'] ?? '');
         $webhook->setInitialAuthRef($content['InitialAuthRef'] ?? '');
-        $webhook->setRequest($this->serializer->serialize($content ?? []));
+        $webhook->setRequest($content['request'] ?? '');
 
         return $webhook;
     }

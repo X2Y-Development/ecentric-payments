@@ -38,6 +38,7 @@
                     <allow_multiple_address>1</allow_multiple_address>
                 </general>
                 <model>EcentricPaymentGatewayFacade</model>
+                <title>Credit Card, MasterPass, EFT, RCS</title>
             </ecentric>
         </payment>
     </default>
