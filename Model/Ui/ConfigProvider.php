@@ -8,16 +8,16 @@ declare(strict_types=1);
 
 namespace Ecentric\Payment\Model\Ui;
 
+use Ecentric\Payment\Service\Config as ServiceConfig;
 use Magento\Checkout\Model\ConfigProviderInterface;
-use Ecentric\Payment\Helper\Data as EcentricHelper;
 
 class ConfigProvider implements ConfigProviderInterface
 {
     /**
-     * @param EcentricHelper $ecentricHelper
+     * @param ServiceConfig $ecentricConfig
      */
     public function __construct(
-        private EcentricHelper $ecentricHelper
+        private ServiceConfig $ecentricConfig
     ) {
     }
 
@@ -28,8 +28,8 @@ class ConfigProvider implements ConfigProviderInterface
     {
         return [
             'payment' => [
-                EcentricHelper::METHOD_CODE => [
-                    'isActive' => $this->ecentricHelper->isActiveModule()
+                ServiceConfig::METHOD_CODE => [
+                    'isActive' => $this->ecentricConfig->isActiveModule()
                 ]
             ]
         ];

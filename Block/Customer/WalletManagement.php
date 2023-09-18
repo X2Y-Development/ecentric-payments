@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Ecentric\Payment\Block\Customer;
 
-use Ecentric\Payment\Helper\Data as EcentricHelper;
+use Ecentric\Payment\Service\Config as EcentricConfig;
 use Magento\Customer\Model\Session;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
@@ -16,13 +16,13 @@ use Magento\Framework\View\Element\Template\Context;
 class WalletManagement extends Template
 {
     /**
-     * @param EcentricHelper $ecentricHelper
+     * @param EcentricConfig $ecentricConfig
      * @param Session $customerSession
      * @param Context $context
      * @param array $data
      */
     public function __construct(
-        protected EcentricHelper $ecentricHelper,
+        protected EcentricConfig $ecentricConfig,
         protected Session $customerSession,
         Context $context,
         array $data = []
@@ -35,7 +35,7 @@ class WalletManagement extends Template
      */
     public function getWalletManagementUrl(): string
     {
-        return $this->ecentricHelper->getApiUrl() . '/wallet/manage';
+        return $this->ecentricConfig->getApiUrl() . '/wallet/manage';
     }
 
     /**
@@ -43,8 +43,8 @@ class WalletManagement extends Template
      */
     public function getWalletParameters(): array
     {
-        $merchantId = $this->ecentricHelper->getMerchantId();
-        $merchantKey = $this->ecentricHelper->getMerchantKey();
+        $merchantId = $this->ecentricConfig->getMerchantId();
+        $merchantKey = $this->ecentricConfig->getMerchantKey();
         $userId = $this->customerSession->getCustomerId();
         $checksum = hash('sha256', $merchantKey . '|' . $merchantId . '|' . $userId);
 

@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Ecentric\Payment\Block;
 
-use Ecentric\Payment\Helper\Data as EcentricHelper;
+use Ecentric\Payment\Service\Config as EcentricConfig;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -19,13 +19,13 @@ class Ecentric extends Template
 {
     /**
      * @param CheckoutSession $checkoutSession
-     * @param EcentricHelper $ecentricHelper
+     * @param EcentricConfig $ecentricConfig
      * @param Context $context
      * @param array $data
      */
     public function __construct(
         private CheckoutSession $checkoutSession,
-        private EcentricHelper $ecentricHelper,
+        private EcentricConfig $ecentricConfig,
         Context $context,
         array $data = []
     ) {
@@ -43,8 +43,8 @@ class Ecentric extends Template
 
         if ($lastOrder->getEntityId()) {
             $lastOrderId = $lastOrder->getEntityId();
-            $merchantId = $this->ecentricHelper->getMerchantId();
-            $merchantKey = $this->ecentricHelper->getMerchantKey();
+            $merchantId = $this->ecentricConfig->getMerchantId();
+            $merchantKey = $this->ecentricConfig->getMerchantKey();
             $transactionType = 'Payment';
             $merchantRef = 'Ord' . $lastOrderId;
             $amount = $lastOrder->getGrandTotal() * 100;
@@ -74,6 +74,6 @@ class Ecentric extends Template
      */
     public function getRedirectUrl(): string
     {
-        return $this->ecentricHelper->getApiUrl();
+        return $this->ecentricConfig->getApiUrl();
     }
 }

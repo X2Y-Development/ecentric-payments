@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Ecentric\Payment\Gateway\Validator;
 
-use Ecentric\Payment\Helper\Data as EcentricHelper;
+use Ecentric\Payment\Service\Config as EcentricConfig;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
@@ -19,12 +19,12 @@ class Currency extends AbstractValidator
 {
     /**
      * @param ResultInterfaceFactory $resultFactory
-     * @param EcentricHelper $ecentricHelper
+     * @param EcentricConfig $ecentricConfig
      * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         ResultInterfaceFactory $resultFactory,
-        private EcentricHelper $ecentricHelper,
+        private EcentricConfig $ecentricConfig,
         private StoreManagerInterface $storeManager
     ) {
         parent::__construct($resultFactory);
@@ -35,7 +35,7 @@ class Currency extends AbstractValidator
      */
     public function validate(array $validationSubject): ResultInterface
     {
-        $currencies = $this->ecentricHelper->getGeneralGroupInfo(
+        $currencies = $this->ecentricConfig->getGeneralGroupInfo(
             'currency',
             ScopeInterface::SCOPE_STORE,
             $this->storeManager->getStore()->getId()

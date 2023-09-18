@@ -9,7 +9,7 @@
     <!-- Payment Method Facade configuration -->
     <virtualType name="EcentricPaymentGatewayFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
-            <argument name="code" xsi:type="const">\Ecentric\Payment\Helper\Data::METHOD_CODE</argument>
+            <argument name="code" xsi:type="const">\Ecentric\Payment\Service\Config::METHOD_CODE</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info</argument>
             <argument name="valueHandlerPool" xsi:type="object">EcentricPaymentGatewayValueHandlerPool</argument>
@@ -35,8 +35,8 @@
     <!-- Initialize payment method config  -->
     <virtualType name="EcentricPaymentConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
-            <argument name="methodCode" xsi:type="const">\Ecentric\Payment\Helper\Data::METHOD_CODE</argument>
-            <argument name="pathPattern" xsi:type="const">\Ecentric\Payment\Helper\Data::XPATH_PATTERN</argument>
+            <argument name="methodCode" xsi:type="const">\Ecentric\Payment\Service\Config::METHOD_CODE</argument>
+            <argument name="pathPattern" xsi:type="const">\Ecentric\Payment\Service\Config::XPATH_PATTERN</argument>
         </arguments>
     </virtualType>
 
@@ -60,7 +60,7 @@
     <virtualType name="EcentricPaymentGatewayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="sale" xsi:type="string">Ecentric\Payment\Gateway\SaleCommand</item>
+                <item name="sale" xsi:type="string">Magento\Payment\Gateway\Command\NullCommand</item>
             </argument>
         </arguments>
     </virtualType>

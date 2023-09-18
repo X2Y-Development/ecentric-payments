@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Ecentric\Payment\Gateway\Validator;
 
-use Ecentric\Payment\Helper\Data as EcentricHelper;
+use Ecentric\Payment\Service\Config as EcentricConfig;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
@@ -19,12 +19,12 @@ class Country extends AbstractValidator
 {
     /**
      * @param ResultInterfaceFactory $resultFactory
-     * @param EcentricHelper $ecentricHelper
+     * @param EcentricConfig $ecentricConfig
      * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         ResultInterfaceFactory $resultFactory,
-        private EcentricHelper $ecentricHelper,
+        private EcentricConfig $ecentricConfig,
         private StoreManagerInterface $storeManager
     ) {
         parent::__construct($resultFactory);
@@ -37,14 +37,14 @@ class Country extends AbstractValidator
     {
         $storeId = $this->storeManager->getStore()->getId();
 
-        $allowSpecific = $this->ecentricHelper->getGeneralGroupInfo(
+        $allowSpecific = $this->ecentricConfig->getGeneralGroupInfo(
             'allowspecific',
             ScopeInterface::SCOPE_STORE,
             $storeId
         );
 
         if ($allowSpecific == 1) {
-            $countries = $this->ecentricHelper->getGeneralGroupInfo(
+            $countries = $this->ecentricConfig->getGeneralGroupInfo(
                 'specificcountry',
                 ScopeInterface::SCOPE_STORE,
                 $storeId

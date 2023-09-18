@@ -17,7 +17,7 @@
                     <field id="active" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable Solution</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <comment><![CDATA[Sign up for an account with <a href="https://secure1.ecentric.co.za/Authentication" target="_blank">Ecentric</a>.<br/>When Enable Solution is set to Yes, Ecentric payment method will be available on Checkout Payments page.]]></comment>
+                        <comment><![CDATA[Sign up for an account with <a href="https://portal.ecentricpaymentgateway.co.za/#/" target="_blank">Ecentric</a>.<br/>When Enable Solution is set to Yes, Ecentric payment method will be available on Checkout Payments page.]]></comment>
                     </field>
                     <field id="title" translate="label comment" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Title</label>

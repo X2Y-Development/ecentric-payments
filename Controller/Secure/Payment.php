@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Ecentric\Payment\Controller\Secure;
 
 use Ecentric\Payment\Controller\Payment as AbstractPayment;
+use Exception;
 use Magento\Framework\Controller\ResultInterface;
 
 class Payment extends AbstractPayment
@@ -18,29 +19,32 @@ class Payment extends AbstractPayment
      */
     public function execute(): ResultInterface
     {
-        $this->ecentricLogger->debug('Payment Ecentric' . $this->request->getContent());
-        $merchantRef = $this->request->getPost('MerchantReference');
-        $pattern = '/\d+/';
-        preg_match($pattern, $merchantRef, $orderId);
-        $transactionId = $this->request->getPost("TransactionID");
-        $status = $this->request->getPost("Result");
-        $amount = $this->request->getPost("Amount");
-        $message = $this->request->getPost("FailureMessage");
-        $checksum = $this->request->getPost("Checksum");
-        $content = [
-            'TransactionID' => $transactionId,
-            'OrderNumber' => $orderId[0],
-            'TransactionStatus' => $status,
-            'Amount' => $amount,
+        $this->ecentricLogger->debug('Started processing Ecentric Order: ' . $this->request->getContent());
+
+        $result = false;
+        $response = $this->setResponseData([
+            'transaction_id' => $this->request->getPost("TransactionID"),
+            'order_id' => $this->getOrderId($this->request->getPost('MerchantReference')),
+            'transaction_status' => $this->request->getPost("Result"),
+            'amount' => (float)$this->request->getPost("Amount"),
             'request' => $this->request->getContent()
-        ];
+        ]);
 
-        $this->processOrder->execute($content);
+        try {
+            $result = $this->processOrder->execute($response);
+        } catch (Exception $e) {
+            $this->ecentricLogger->error($e->getMessage());
+        }
 
-        if ($status === 'Success') {
+        $this->ecentricLogger->debug('Finished processing Ecentric Order');
+
+        if ($result === true) {
             return $this->redirect('checkout/onepage/success');
         } else {
-            $this->ecentricHelper->restoreQuote();
+            $this->registerPayment->restoreQuote();
+            $this->messageManager->addErrorMessage(
+                __('An error occurred while processing your order. Please try again')
+            );
 
             return $this->redirect('checkout/cart');
         }
