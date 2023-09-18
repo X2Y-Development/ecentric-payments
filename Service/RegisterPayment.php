@@ -18,6 +18,7 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Service\InvoiceService;
 
 class RegisterPayment
 {
@@ -26,12 +27,14 @@ class RegisterPayment
      * @param OrderRepositoryInterface $orderRepository
      * @param Session $checkoutSession
      * @param CartRepositoryInterface $quoteRepository
+     * @param InvoiceService $invoiceService
      */
     public function __construct(
         private EventManager $eventManager,
         private OrderRepositoryInterface $orderRepository,
         private Session $checkoutSession,
-        private CartRepositoryInterface $quoteRepository
+        private CartRepositoryInterface $quoteRepository,
+        private InvoiceService $invoiceService
     ) {
     }
 
@@ -125,33 +128,38 @@ class RegisterPayment
         OrderInterface $order,
         OrderPaymentInterface $payment
     ): void {
-        if ($order->getStatus() === Order::STATE_PROCESSING) {
+        if (!in_array($order->getState(), [Order::STATE_PENDING_PAYMENT, Order::STATE_NEW, Order::STATE_PROCESSING])) {
             return;
         }
 
-        if ($response->getWebhookRequestType() === 'Authorize') {
-            $order->addCommentToStatusHistory(__('Approved authorize payment in Ecentric'));
+        if ($response->getWebhookRequestType() === null) {
+            $this->setLastDataToSession(
+                (int)$order->getQuoteId(),
+                (int)$order->getId(),
+                $order->getIncrementId(),
+                $order->getStatus(),
+                $response->getWebhookRequestType()
+            );
 
             return;
         }
 
         $payment->setData('transaction_id', $response->getTransactionId());
         $payment->setAdditionalInformation('ecentric_request', $response->getRequest());
-        $payment->registerCaptureNotification($response->getAmount(), true);
 
-        $order->addCommentToStatusHistory(
-            __('Approved payment online in Ecentric.'),
-            false,
-            true
-        );
+        if ($response->getWebhookRequestType() === 'Capture') {
+            $payment->registerCaptureNotification($response->getAmount(), true);
+        }
 
-        $this->setLastDataToSession(
-            (int)$order->getQuoteId(),
-            (int)$order->getId(),
-            $order->getIncrementId(),
-            $order->getStatus(),
-            $response->getWebhookRequestType()
-        );
+        if ($response->getWebhookRequestType() === 'Authorize') {
+            $payment->registerAuthorizationNotification($response->getAmount());
+        }
+
+//        $order->addCommentToStatusHistory(
+//            __('Approved payment online in Ecentric.'),
+//            false,
+//            true
+//        );
     }
 
     /**
