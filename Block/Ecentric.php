@@ -17,6 +17,8 @@ use Magento\Framework\View\Element\Template\Context;
 
 class Ecentric extends Template
 {
+    private const TRANSACTION_TYPE = 'Payment';
+
     /**
      * @param CheckoutSession $checkoutSession
      * @param EcentricConfig $ecentricConfig
@@ -45,7 +47,7 @@ class Ecentric extends Template
             $lastOrderId = $lastOrder->getEntityId();
             $merchantId = $this->ecentricConfig->getMerchantId();
             $merchantKey = $this->ecentricConfig->getMerchantKey();
-            $transactionType = 'Payment';
+            $transactionType = self::TRANSACTION_TYPE;
             $merchantRef = 'Ord' . $lastOrderId;
             $amount = $lastOrder->getGrandTotal() * 100;
             $currency = $this->_storeManager->getStore()->getCurrentCurrency()->getCode();

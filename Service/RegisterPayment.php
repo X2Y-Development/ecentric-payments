@@ -16,25 +16,25 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
+use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Sales\Model\Order;
 
 class RegisterPayment
 {
+    private const TRANSACTION_STATUS_FAILURE = 'Failure';
+
     /**
      * @param EventManager $eventManager
      * @param OrderRepositoryInterface $orderRepository
      * @param Session $checkoutSession
      * @param CartRepositoryInterface $quoteRepository
-     * @param TransactionRepositoryInterface $transactionRepository
      */
     public function __construct(
         private EventManager $eventManager,
         private OrderRepositoryInterface $orderRepository,
         private Session $checkoutSession,
-        private CartRepositoryInterface $quoteRepository,
-        private TransactionRepositoryInterface $transactionRepository
+        private CartRepositoryInterface $quoteRepository
     ) {
     }
 
@@ -53,7 +53,7 @@ class RegisterPayment
             throw new LocalizedException(__('Order should be specified'));
         }
 
-        if ($response->getTransactionStatus() === 'Failure') {
+        if ($response->getTransactionStatus() === self::TRANSACTION_STATUS_FAILURE) {
             $order->addCommentToStatusHistory(
                 __('Transaction failure. Order will be canceled automatically by cron')
             );
@@ -81,7 +81,7 @@ class RegisterPayment
         }
 
         try {
-            $this->registerPayment($response, $order, $payment);
+            $this->registerPayment($response, $order, $payment, $response->getWebhookRequestType());
             $this->eventManager->dispatch(
                 'ecentric_payment_order_success',
                 ['order' => $order, 'content' => $response]
@@ -121,42 +121,41 @@ class RegisterPayment
      * @param Response $response
      * @param OrderInterface $order
      * @param OrderPaymentInterface $payment
+     * @param string|null $requestType
      * @return void
      */
     private function registerPayment(
         Response $response,
         OrderInterface $order,
-        OrderPaymentInterface $payment
+        OrderPaymentInterface $payment,
+        ?string $requestType
     ): void {
         if (!in_array($order->getState(), [Order::STATE_PENDING_PAYMENT, Order::STATE_NEW, Order::STATE_PROCESSING])) {
             return;
         }
 
-        if ($response->getWebhookRequestType() === null) {
+        $isNullOrCapture = $requestType === TransactionInterface::TYPE_CAPTURE || empty($requestType);
+
+        if ($isNullOrCapture && in_array($order->getState(), [Order::STATE_PENDING_PAYMENT, Order::STATE_NEW])) {
+            $payment->setTransactionId($response->getTransactionId());
+            $payment->setAdditionalInformation('ecentric_request', $response->getRequest());
+            $payment->registerCaptureNotification($response->getAmount(), true);
             $this->setLastDataToSession(
                 (int)$order->getQuoteId(),
                 (int)$order->getId(),
                 $order->getIncrementId(),
                 $order->getStatus(),
-                $response->getWebhookRequestType()
+                $requestType
             );
-
-            return;
-        }
-
-        $payment->setData('transaction_id', $response->getTransactionId());
-        $payment->setAdditionalInformation('ecentric_request', $response->getRequest());
-
-        if ($response->getWebhookRequestType() === 'Capture') {
-            $parentTransaction = $this->transactionRepository->getByTransactionType('Authorization', $payment->getId());
-            $payment->setParentId((int)$parentTransaction->getId());
-            $payment->setParentTransactionId($parentTransaction->getTxnId());
-            $payment->registerCaptureNotification($response->getAmount(), true);
-        }
-
-        if ($response->getWebhookRequestType() === 'Authorize') {
-            $payment->setIsTransactionClosed(0);
-            $payment->registerAuthorizationNotification($response->getAmount());
+        } elseif ($requestType) {
+            $order->addCommentToStatusHistory(
+                __(
+                    'Request %1 from Ecentric amount of %2. Transaction ID: "%3"',
+                    $requestType,
+                    $order->getBaseCurrency()->formatTxt($response->getAmount()),
+                    $response->getTransactionId()
+                ),
+            );
         }
     }
 

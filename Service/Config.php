@@ -17,10 +17,16 @@ use Magento\Store\Model\StoreManagerInterface;
 class Config
 {
     public const METHOD_CODE = 'ecentric';
+    public const XPATH_MODE = 'mode';
+    public const XPATH_MERCHANT_GUID_SANDBOX = 'merchant_guid_sandbox';
+    public const XPATH_MERCHANT_GUID_LIVE = 'merchant_guid_live';
+    public const XPATH_MERCHANT_KEY_SANDBOX = 'merchant_key_sandbox';
+    public const XPATH_MERCHANT_KEY_LIVE = 'merchant_key_live';
+    public const XPATH_NEW_ORDER_STATUS = 'new_order_status';
+    public const XPATH_ACTIVE = 'active';
     public const XPATH_PATTERN = 'payment/%s/general/%s';
     public const XPATH_GENERAL = 'payment/ecentric/general/';
     public const XPATH_API = 'payment/ecentric/api/';
-    public const PAYMENT_ADD_INFO_KEY = 'ecentric_payment_info';
     public const HPP_LIVE = 'https://sandbox.ecentric.co.za/HPP'; // @TODO: get correct LIVE url!
     public const HPP_TEST = 'https://sandbox.ecentric.co.za/HPP';
 
@@ -66,26 +72,26 @@ class Config
      * @param string $scope
      * @return string
      */
-    public function getMerchantId(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
+    public function getMerchantId(string $scope = ScopeInterface::SCOPE_WEBSITE): string
     {
-        if ($this->getApiMode() === 'sandbox') {
-            return $this->getApiGroupInfo('merchant_guid_sandbox', $scope);
+        if ($this->getApiMode() === MODE::SANDBOX) {
+            return $this->getApiGroupInfo(self::XPATH_MERCHANT_GUID_SANDBOX, $scope);
         }
 
-        return $this->getApiGroupInfo('merchant_guid_live', $scope);
+        return $this->getApiGroupInfo(self::XPATH_MERCHANT_GUID_LIVE, $scope);
     }
 
     /**
      * @param string $scope
      * @return string
      */
-    public function getMerchantKey(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
+    public function getMerchantKey(string $scope = ScopeInterface::SCOPE_WEBSITE): string
     {
-        if ($this->getApiMode() === 'sandbox') {
-            return $this->getApiGroupInfo('merchant_key_sandbox', $scope);
+        if ($this->getApiMode() === MODE::SANDBOX) {
+            return $this->getApiGroupInfo(self::XPATH_MERCHANT_KEY_SANDBOX, $scope);
         }
 
-        return $this->getApiGroupInfo('merchant_key_live', $scope);
+        return $this->getApiGroupInfo(self::XPATH_MERCHANT_KEY_LIVE, $scope);
     }
 
     /**
@@ -97,7 +103,7 @@ class Config
     public function isActiveModule(): bool
     {
         return $this->getGeneralGroupInfo(
-            'active',
+            self::XPATH_ACTIVE,
             ScopeInterface::SCOPE_STORE,
             $this->storeManager->getStore()->getId()
             ) && $this->isActiveMode();
@@ -107,9 +113,9 @@ class Config
      * @param string $scope
      * @return string
      */
-    public function getApiMode(string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): string
+    public function getApiMode(string $scope = ScopeInterface::SCOPE_WEBSITE): string
     {
-        return (string)$this->getApiGroupInfo('mode', $scope);
+        return (string)$this->getApiGroupInfo(self::XPATH_MODE, $scope);
     }
 
     /**
@@ -121,7 +127,7 @@ class Config
     public function getNewOrderStatus(): string
     {
         return (string)$this->getGeneralGroupInfo(
-            'new_order_status',
+            self::XPATH_NEW_ORDER_STATUS,
             ScopeInterface::SCOPE_STORE,
             $this->storeManager->getStore()->getId()
         );

@@ -43,8 +43,10 @@ class Payment extends AbstractPayment
         } else {
             $this->registerPayment->restoreQuote();
             $this->messageManager->addErrorMessage(
-                __('Payment was not completed successfully.
-                 Please try again, and complete the payment to process the order.')
+                __(
+                    'Payment was not completed successfully.
+                     Please try again, and complete the payment to process the order.'
+                )
             );
 
             return $this->redirect('checkout/cart');

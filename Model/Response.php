@@ -11,7 +11,7 @@ namespace Ecentric\Payment\Model;
 use Magento\Framework\DataObject;
 
 /**
- * Content model
+ * Response model
  *
  * @method int getOrderId()
  * @method Response setOrderId(int $orderId)
