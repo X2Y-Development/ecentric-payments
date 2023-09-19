@@ -27,7 +27,7 @@ class Webhook extends AbstractPayment
             'order_id' => $this->getOrderId($content['OrderNumber']),
             'webhook_request_type' => $content['RequestType'],
             'transaction_id' => $content['TransactionID'],
-            'amount' => (float)$content['Amount'],
+            'amount' => (int)$content['Amount'] / 100,
             'transaction_status' => $content['TransactionStatus'],
             'ecentric_request' => $this->request->getContent()
         ]);
