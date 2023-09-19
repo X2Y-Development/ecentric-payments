@@ -17,8 +17,8 @@ use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Service\InvoiceService;
 
 class RegisterPayment
 {
@@ -27,14 +27,14 @@ class RegisterPayment
      * @param OrderRepositoryInterface $orderRepository
      * @param Session $checkoutSession
      * @param CartRepositoryInterface $quoteRepository
-     * @param InvoiceService $invoiceService
+     * @param TransactionRepositoryInterface $transactionRepository
      */
     public function __construct(
         private EventManager $eventManager,
         private OrderRepositoryInterface $orderRepository,
         private Session $checkoutSession,
         private CartRepositoryInterface $quoteRepository,
-        private InvoiceService $invoiceService
+        private TransactionRepositoryInterface $transactionRepository
     ) {
     }
 
@@ -83,7 +83,7 @@ class RegisterPayment
         try {
             $this->registerPayment($response, $order, $payment);
             $this->eventManager->dispatch(
-                'ecentric_payment_order_succeed',
+                'ecentric_payment_order_success',
                 ['order' => $order, 'content' => $response]
             );
             $this->orderRepository->save($order);
@@ -148,18 +148,16 @@ class RegisterPayment
         $payment->setAdditionalInformation('ecentric_request', $response->getRequest());
 
         if ($response->getWebhookRequestType() === 'Capture') {
+            $parentTransaction = $this->transactionRepository->getByTransactionType('Authorization', $payment->getId());
+            $payment->setParentId((int)$parentTransaction->getId());
+            $payment->setParentTransactionId($parentTransaction->getTxnId());
             $payment->registerCaptureNotification($response->getAmount(), true);
         }
 
         if ($response->getWebhookRequestType() === 'Authorize') {
+            $payment->setIsTransactionClosed(0);
             $payment->registerAuthorizationNotification($response->getAmount());
         }
-
-//        $order->addCommentToStatusHistory(
-//            __('Approved payment online in Ecentric.'),
-//            false,
-//            true
-//        );
     }
 
     /**
@@ -182,7 +180,6 @@ class RegisterPayment
         if ($requestType === null) {
             $this->checkoutSession->setLastQuoteId($quoteId);
             $this->checkoutSession->setLastSuccessQuoteId($quoteId);
-            $this->checkoutSession->clearHelperData();
             $this->checkoutSession->setLastOrderId($orderId);
             $this->checkoutSession->setLastRealOrderId($orderIncrementId);
             $this->checkoutSession->setLastOrderStatus($orderStatus);
