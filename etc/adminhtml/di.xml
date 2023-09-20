@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author     X2Y Development team <dev@x2y.io>
+ * @copyright  2023 X2Y Development team
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Sales\Model\Service\CreditmemoService">
+        <plugin name="Ecentric_Payment::show_message_and_add_comment_to_order_history_after_refund"
+                type="Ecentric\Payment\Plugin\CreditmemoService"/>
+    </type>
+</config>

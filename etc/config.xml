@@ -30,9 +30,9 @@
                     <can_authorize>0</can_authorize>
                     <can_capture>0</can_capture>
                     <can_sale>1</can_sale>
-                    <can_refund>1</can_refund>
+                    <can_refund>0</can_refund>
                     <can_order>1</can_order>
-                    <is_offline>0</is_offline>
+                    <is_offline>1</is_offline>
                     <can_use_checkout>1</can_use_checkout>
                     <can_use_internal>0</can_use_internal>
                     <allow_multiple_address>1</allow_multiple_address>

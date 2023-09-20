@@ -12,6 +12,7 @@ use Ecentric\Payment\Service\Config as ServiceConfig;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
+use Magento\Sales\Model\ResourceModel\Order\Collection;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 
 class CancelOrder
@@ -36,20 +37,31 @@ class CancelOrder
         $currentDate = $this->timezone->date(new \DateTime('now'));
         $date = $currentDate->sub(new \DateInterval('P1D'))->format('Y-m-d H:i:s');
 
+        $orderCollection = $this->getOrderCollection($date);
+
+        foreach ($orderCollection->getItems() as $order) {
+            /** @var Order $order */
+            $order->cancel();
+            $this->orderRepository->save($order);
+        }
+    }
+
+    /**
+     * @param string $date
+     * @return Collection
+     */
+    private function getOrderCollection(string $date): Collection
+    {
         $orderCollection = $this->orderCollectionFactory->create();
         $orderCollection->join(
             ['sales_order_payment' => $orderCollection->getTable('sales_order_payment')],
             'main_table.entity_id = sales_order_payment.parent_id',
             ['method']
         );
-        $orderCollection->addFieldToFilter('status', ['in' => [Order::STATE_PENDING_PAYMENT]]);
+        $orderCollection->addFieldToFilter('state', ['in' => [Order::STATE_NEW ,Order::STATE_PENDING_PAYMENT]]);
         $orderCollection->addFieldToFilter('method', ['eq' => ServiceConfig::METHOD_CODE]);
         $orderCollection->addFieldToFilter('created_at', ['lteq' => $date]);
 
-        foreach ($orderCollection as $order) {
-            /** @var Order $order */
-            $order->cancel();
-            $this->orderRepository->save($order);
-        }
+        return $orderCollection;
     }
 }
