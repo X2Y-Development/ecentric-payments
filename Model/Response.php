@@ -9,12 +9,13 @@ declare(strict_types=1);
 namespace Ecentric\Payment\Model;
 
 use Magento\Framework\DataObject;
+use Magento\Sales\Api\Data\OrderInterface;
 
 /**
  * Response model
  *
- * @method int getOrderId()
- * @method Response setOrderId(int $orderId)
+ * @method OrderInterface getOrder()
+ * @method Response setOrder(OrderInterface $orderId)
  * @method string getWebhookRequestType()
  * @method Response setWebhookRequestType(string $requestType)
  * @method string getTransactionId()

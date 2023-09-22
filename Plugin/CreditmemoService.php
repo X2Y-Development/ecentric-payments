@@ -49,13 +49,14 @@ class CreditmemoService
         $paymentMethod = $payment->getMethod();
 
         if ($paymentMethod === Config::METHOD_CODE && $order->getState() === Order::STATE_CLOSED) {
-            $link = "<a href='https://portal.ecentricpaymentgateway.co.za/'>Ecentric Payments Merchant Portal</a>";
-            $message = __("Please make sure to refund the order via %1", $link);
+            $link = '<a href="https://portal.ecentricpaymentgateway.co.za/" target="_blank" rel="noopener">Ecentric Payments Merchant Portal</a>';
+            $message = __('Please make sure to refund the order via %1', $link);
             $order->addCommentToStatusHistory($message);
             $this->orderRepository->save($order);
 
             $this->messageManager->addSuccess($message);
         }
+
         return $result;
     }
 }

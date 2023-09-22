@@ -47,11 +47,7 @@ class RegisterPayment
      */
     public function processOrder(Response $response): bool
     {
-        $order = $this->orderRepository->get($response->getOrderId());
-
-        if (!($order instanceof OrderInterface)) {
-            throw new LocalizedException(__('Order should be specified'));
-        }
+        $order = $response->getOrder();
 
         if ($response->getTransactionStatus() === self::TRANSACTION_STATUS_FAILURE) {
             $order->addCommentToStatusHistory(
@@ -62,14 +58,6 @@ class RegisterPayment
                 ['order' => $order, 'content' => $response]
             );
             $this->orderRepository->save($order);
-
-            $this->setLastDataToSession(
-                (int)$order->getQuoteId(),
-                (int)$order->getId(),
-                $order->getIncrementId(),
-                $order->getStatus(),
-                $response->getWebhookRequestType()
-            );
 
             throw new LocalizedException(__('Transaction failure, order id: %1', $order->getId()));
         }
@@ -134,20 +122,15 @@ class RegisterPayment
             return;
         }
 
-        $isNullOrCapture = $requestType === TransactionInterface::TYPE_CAPTURE || empty($requestType);
+        $isNullOrCapture = $requestType === TransactionInterface::TYPE_CAPTURE || $requestType === null;
 
         if ($isNullOrCapture && in_array($order->getState(), [Order::STATE_PENDING_PAYMENT, Order::STATE_NEW])) {
             $payment->setTransactionId($response->getTransactionId());
             $payment->setAdditionalInformation('ecentric_request', $response->getRequest());
             $payment->registerCaptureNotification($response->getAmount(), true);
-            $this->setLastDataToSession(
-                (int)$order->getQuoteId(),
-                (int)$order->getId(),
-                $order->getIncrementId(),
-                $order->getStatus(),
-                $requestType
-            );
-        } elseif ($requestType) {
+        }
+
+        if ($requestType !== null) {
             $order->addCommentToStatusHistory(
                 __(
                     'Request %1 from Ecentric amount of %2. Transaction ID: "%3"',
@@ -160,28 +143,16 @@ class RegisterPayment
     }
 
     /**
-     * Set last data to redirect to success page or cart page
+     * Set last data to redirect to success page
      *
-     * @param int $quoteId
-     * @param int $orderId
-     * @param string $orderIncrementId
-     * @param string $orderStatus
-     * @param string|null $requestType
      * @return void
      */
-    private function setLastDataToSession(
-        int $quoteId,
-        int $orderId,
-        string $orderIncrementId,
-        string $orderStatus,
-        ?string $requestType
-    ): void {
-        if ($requestType === null) {
-            $this->checkoutSession->setLastQuoteId($quoteId);
-            $this->checkoutSession->setLastSuccessQuoteId($quoteId);
-            $this->checkoutSession->setLastOrderId($orderId);
-            $this->checkoutSession->setLastRealOrderId($orderIncrementId);
-            $this->checkoutSession->setLastOrderStatus($orderStatus);
-        }
+    public function setLastDataToSession(): void {
+        $order = $this->checkoutSession->getLastRealOrder();
+        $this->checkoutSession->setLastQuoteId((int)$order->getQuoteId());
+        $this->checkoutSession->setLastSuccessQuoteId((int)$order->getQuoteId());
+        $this->checkoutSession->setLastOrderId($order->getEntityId());
+        $this->checkoutSession->setLastRealOrderId($order->getIncrementId());
+        $this->checkoutSession->setLastOrderStatus($order->getStatus());
     }
 }

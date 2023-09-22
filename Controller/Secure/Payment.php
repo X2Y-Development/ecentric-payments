@@ -22,16 +22,18 @@ class Payment extends AbstractPayment
         $this->ecentricLogger->debug('Started processing Ecentric Order: ' . $this->request->getContent());
 
         $result = false;
-        $response = $this->setResponseData([
-            'transaction_id' => $this->request->getPost("TransactionID"),
-            'order_id' => $this->getOrderId($this->request->getPost('MerchantReference')),
-            'transaction_status' => $this->request->getPost("Result"),
-            'amount' => (int)$this->request->getPost("Amount") / 100,
-            'request' => $this->request->getContent()
-        ]);
-
         try {
+            $order = $this->getOrder($this->request->getPost('MerchantReference'));
+            $response = $this->setResponseData([
+                'transaction_id' => $this->request->getPost("TransactionID"),
+                'order' => $order,
+                'transaction_status' => $this->request->getPost("Result"),
+                'amount' => (int)$this->request->getPost("Amount") / 100,
+                'request' => $this->request->getContent()
+            ]);
+
             $result = $this->processOrder->execute($response);
+            $this->registerPayment->setLastDataToSession();
         } catch (Exception $e) {
             $this->ecentricLogger->error($e->getMessage());
         }

@@ -13,7 +13,7 @@
     </head>
     <body>
         <referenceContainer name="content">
-            <block class="Ecentric\Payment\Block\Ecentric"
+            <block class="Ecentric\Payment\Block\Checkout\Ecentric"
                    name="ecentric.payment"
                    template="ecentric_payment.phtml"
                    ifconfig="payment/ecentric/general/active"

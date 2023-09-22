@@ -46,12 +46,17 @@ class WalletManagement extends Template
         $merchantId = $this->ecentricConfig->getMerchantId();
         $merchantKey = $this->ecentricConfig->getMerchantKey();
         $userId = $this->customerSession->getCustomerId();
-        $checksum = hash('sha256', $merchantKey . '|' . $merchantId . '|' . $userId);
+        $checksumData = implode('|', [
+            $merchantKey,
+            $merchantId,
+            $userId
+        ]);
+        $checksum = hash('sha256', $checksumData);
 
         return [
             'MerchantID' => $merchantId,
-            'UserID'     => $userId,
-            'Checksum'   => strtoupper($checksum),
+            'UserID' => $userId,
+            'Checksum' => strtoupper($checksum),
         ];
     }
 

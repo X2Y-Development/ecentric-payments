@@ -19,7 +19,6 @@
                 <general>
                     <active>0</active>
                     <title>Credit Card, MasterPass, EFT, RCS</title>
-                    <subtitle>Simple, quick and easy payments.</subtitle>
                     <new_order_status>pending</new_order_status>
                     <show_advanced_options>0</show_advanced_options>
                     <debug>0</debug>
@@ -32,7 +31,7 @@
                     <can_sale>1</can_sale>
                     <can_refund>0</can_refund>
                     <can_order>1</can_order>
-                    <is_offline>1</is_offline>
+                    <is_offline>0</is_offline>
                     <can_use_checkout>1</can_use_checkout>
                     <can_use_internal>0</can_use_internal>
                     <allow_multiple_address>1</allow_multiple_address>

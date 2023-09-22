@@ -50,7 +50,7 @@ class Config
      */
     public function getGeneralGroupInfo(
         string $path,
-        string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+        string $scope = ScopeInterface::SCOPE_WEBSITE,
         null|int|string $scopeCode = null
     ): mixed {
         return $this->scopeConfig->getValue(self::XPATH_GENERAL . $path, $scope, $scopeCode);
@@ -63,7 +63,7 @@ class Config
      * @param string $scope
      * @return mixed
      */
-    public function getApiGroupInfo(string $path, string $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT): mixed
+    public function getApiGroupInfo(string $path, string $scope = ScopeInterface::SCOPE_WEBSITE): mixed
     {
         return $this->scopeConfig->getValue(self::XPATH_API . $path, $scope);
     }
@@ -104,7 +104,7 @@ class Config
     {
         return $this->getGeneralGroupInfo(
             self::XPATH_ACTIVE,
-            ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_WEBSITE,
             $this->storeManager->getStore()->getId()
             ) && $this->isActiveMode();
     }
@@ -128,7 +128,7 @@ class Config
     {
         return (string)$this->getGeneralGroupInfo(
             self::XPATH_NEW_ORDER_STATUS,
-            ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_WEBSITE,
             $this->storeManager->getStore()->getId()
         );
     }

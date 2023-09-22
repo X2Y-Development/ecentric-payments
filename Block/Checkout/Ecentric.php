@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Ecentric\Payment\Block;
+namespace Ecentric\Payment\Block\Checkout;
 
 use Ecentric\Payment\Service\Config as EcentricConfig;
 use Magento\Checkout\Model\Session as CheckoutSession;
@@ -51,20 +51,23 @@ class Ecentric extends Template
             $merchantRef = 'Ord' . $lastOrderId;
             $amount = $lastOrder->getGrandTotal() * 100;
             $currency = $this->_storeManager->getStore()->getCurrentCurrency()->getCode();
-            $checksum = hash('sha256', $merchantKey
-                . '|' . $merchantId
-                . '|' . $transactionType
-                . '|' . $amount
-                . '|' . $currency
-                . '|' . $merchantRef);
+            $checksumData = implode('|', [
+                $merchantKey,
+                $merchantId,
+                $transactionType,
+                $amount,
+                $currency,
+                $merchantRef
+            ]);
+            $checksum = hash('sha256', $checksumData);
 
             return [
-                'MerchantID'        => $merchantId,
-                'TransactionType'   => $transactionType,
+                'MerchantID' => $merchantId,
+                'TransactionType' => $transactionType,
                 'MerchantReference' => $merchantRef,
-                'Amount'            => $amount,
-                'Currency'          => $currency,
-                'Checksum'          => strtoupper($checksum)
+                'Amount' => $amount,
+                'Currency' => $currency,
+                'Checksum' => strtoupper($checksum)
             ];
         }
 

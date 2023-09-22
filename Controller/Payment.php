@@ -22,6 +22,8 @@ use Ecentric\Payment\Model\Response;
 use Ecentric\Payment\Model\ResponseFactory;
 use Magento\Framework\Message\ManagerInterface as MessageManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
 
 abstract class Payment implements CsrfAwareActionInterface
 {
@@ -36,6 +38,7 @@ abstract class Payment implements CsrfAwareActionInterface
      * @param ResultFactory $resultFactory
      * @param ResponseFactory $responseFactory
      * @param MessageManagerInterface $messageManager
+     * @param OrderRepositoryInterface $orderRepository
      */
     public function __construct(
         protected RequestInterface $request,
@@ -47,7 +50,8 @@ abstract class Payment implements CsrfAwareActionInterface
         protected RegisterPayment $registerPayment,
         protected ResultFactory $resultFactory,
         protected ResponseFactory $responseFactory,
-        protected MessageManagerInterface $messageManager
+        protected MessageManagerInterface $messageManager,
+        protected OrderRepositoryInterface $orderRepository
     ) {
     }
 
@@ -71,23 +75,23 @@ abstract class Payment implements CsrfAwareActionInterface
 
     /**
      * @param string $orderNumber
-     * @return int|null
+     * @return OrderInterface
      */
-    public function getOrderId(string $orderNumber): ?int
+    protected function getOrder(string $orderNumber): OrderInterface
     {
         $pattern = '/\d+/';
         preg_match($pattern, $orderNumber, $matches);
 
         $orderId = $matches[0] ?? null;
 
-        return $orderId ? (int) $orderId : null;
+        return $this->orderRepository->get($orderId);
     }
 
     /**
      * @param array $content
      * @return Response
      */
-    public function setResponseData(array $content): Response
+    protected function setResponseData(array $content): Response
     {
         $response = $this->responseFactory->create();
         $response->setData($content);
@@ -99,7 +103,7 @@ abstract class Payment implements CsrfAwareActionInterface
      * @param string $path
      * @return ResultInterface
      */
-    public function redirect(string $path): ResultInterface
+    protected function redirect(string $path): ResultInterface
     {
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
 
