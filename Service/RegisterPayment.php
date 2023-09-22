@@ -23,6 +23,7 @@ use Magento\Sales\Model\Order;
 class RegisterPayment
 {
     private const TRANSACTION_STATUS_FAILURE = 'Failure';
+    private const TRANSACTION_TYPE_CAPTURE = 'Capture';
 
     /**
      * @param EventManager $eventManager
@@ -122,7 +123,7 @@ class RegisterPayment
             return;
         }
 
-        $isNullOrCapture = $requestType === TransactionInterface::TYPE_CAPTURE || $requestType === null;
+        $isNullOrCapture = $requestType === self::TRANSACTION_TYPE_CAPTURE || $requestType === null;
 
         if ($isNullOrCapture && in_array($order->getState(), [Order::STATE_PENDING_PAYMENT, Order::STATE_NEW])) {
             $payment->setTransactionId($response->getTransactionId());
