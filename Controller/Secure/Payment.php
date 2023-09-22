@@ -33,7 +33,7 @@ class Payment extends AbstractPayment
             ]);
 
             $result = $this->processOrder->execute($response);
-            $this->registerPayment->setLastDataToSession();
+            $this->registerPayment->setLastDataToSession($order);
         } catch (Exception $e) {
             $this->ecentricLogger->error($e->getMessage());
         }

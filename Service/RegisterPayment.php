@@ -16,7 +16,6 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
-use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 
@@ -146,10 +145,11 @@ class RegisterPayment
     /**
      * Set last data to redirect to success page
      *
+     * @param OrderInterface $order
      * @return void
      */
-    public function setLastDataToSession(): void {
-        $order = $this->checkoutSession->getLastRealOrder();
+    public function setLastDataToSession(OrderInterface $order): void
+    {
         $this->checkoutSession->setLastQuoteId((int)$order->getQuoteId());
         $this->checkoutSession->setLastSuccessQuoteId((int)$order->getQuoteId());
         $this->checkoutSession->setLastOrderId($order->getEntityId());
