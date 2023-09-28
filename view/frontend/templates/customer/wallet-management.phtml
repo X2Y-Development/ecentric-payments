@@ -12,12 +12,27 @@ use Magento\Framework\Escaper;
 $formParameters = $block->getWalletParameters();
 ?>
 <?php if ($formParameters) : ?>
-    <form action="<?= $escaper->escapeUrl($block->getWalletManagementUrl()); ?>" method="post" target="_blank">
-        <?php foreach ($formParameters as $name => $value): ?>
-            <input type="hidden" name="<?= $name; ?>" value="<?= $value; ?>">
-        <?php endforeach; ?>
-        <button type="submit" class="action primary"><?= __('Manage Your Wallet') ?></button>
-    </form>
+    <?php foreach ($formParameters as $name => $value): ?>
+        <input type="hidden" name="<?= $name; ?>" value="<?= $value; ?>">
+    <?php endforeach; ?>
+    <button id="ecentric_submit" class="action primary"><?= __('Manage Your Wallet') ?></button>
+
+    <script>
+        require([
+            'jquery',
+            'ecentricJs'
+        ], function ($, ecentricJs) {
+            $('#ecentric_submit').on('click', function () {
+                    var cardModel = {
+                        MerchantID: $("input[name=MerchantID]").val(),
+                        UserID: $("input[name=UserID]").val(),
+                        Checksum: $("input[name=Checksum]").val()
+                    }
+                    ecentricJs.addCard(cardModel)
+                }
+            )
+        });
+    </script>
 <?php endif; ?>
 
 

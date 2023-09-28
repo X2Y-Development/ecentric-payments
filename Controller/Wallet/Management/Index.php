@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Ecentric\Payment\Controller\Wallet\Management;
 
+use Ecentric\Payment\Logger\Logger as EcentricLogger;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
@@ -18,9 +19,13 @@ class Index implements CsrfAwareActionInterface
 {
     /**
      * @param PageFactory $resultPageFactory
+     * @param EcentricLogger $ecentricLogger
+     * @param RequestInterface $request
      */
     public function __construct(
-        protected PageFactory $resultPageFactory
+        protected PageFactory $resultPageFactory,
+        protected EcentricLogger $ecentricLogger,
+        protected RequestInterface $request
     ) {
     }
 
@@ -29,6 +34,10 @@ class Index implements CsrfAwareActionInterface
      */
     public function execute(): ResultInterface
     {
+        if ($this->request->isPost()) {
+            $this->ecentricLogger->debug(__('Ecentric Wallet %1', $this->request->getContent()));
+        }
+
         return $this->resultPageFactory->create();
     }
 
