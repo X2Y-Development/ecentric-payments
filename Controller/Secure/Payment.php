@@ -29,7 +29,7 @@ class Payment extends AbstractPayment
                 'transaction_id' => $this->request->getPost("TransactionID"),
                 'order' => $order,
                 'transaction_status' => $this->request->getPost("Result"),
-                'amount' => (int)$this->request->getPost("Amount") / 100,
+                'amount' => (int) $this->request->getPost("Amount") / 100,
                 'request' => $this->request->getContent()
             ]);
 

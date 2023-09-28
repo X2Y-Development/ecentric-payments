@@ -19,7 +19,7 @@ class Webhook extends AbstractPayment
      */
     public function execute(): ResponseInterface
     {
-        $requestContent = $this->request->getContent();
+        $requestContent = $this->request->getContent() ?? '';
         $this->ecentricLogger->debug(__('Started processing Ecentric Order via webhook: %1', $requestContent));
 
         $result = false;
@@ -32,7 +32,7 @@ class Webhook extends AbstractPayment
                     'order' => $order,
                     'webhook_request_type' => $content['RequestType'],
                     'transaction_id' => $content['TransactionID'],
-                    'amount' => (int)$content['Amount'] / 100,
+                    'amount' => (int) $content['Amount'] / 100,
                     'transaction_status' => $content['TransactionStatus'],
                     'ecentric_request' => $this->request->getContent()
                 ]);

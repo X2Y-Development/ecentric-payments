@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author     X2Y Development team <dev@x2y.io>
+ * @copyright  2023 X2Y Development team
+ */
+ -->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="ecentric_payment_customer_session" resource="default" engine="innodb" comment="Ecentric Payment Customer Session Table">
+        <column xsi:type="int" name="entity_id" padding="11" unsigned="false" nullable="false" identity="true" comment="Identifier"/>
+        <column xsi:type="int" name="order_id" nullable="false" padding="11" comment="Order ID"/>
+        <column xsi:type="int" name="customer_id" nullable="true" padding="11" comment="Customer ID"/>
+        <column xsi:type="varchar" name="customer_session_id" nullable="true" comment="Customer Session ID"/>
+        <column xsi:type="timestamp" name="created_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At Time"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+    </table>
+</schema>

@@ -10,7 +10,7 @@ namespace Ecentric\Payment\Service;
 
 use Ecentric\Payment\Model\Response;
 use Exception;
-use Magento\Checkout\Model\Session;
+use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Api\CartRepositoryInterface;
@@ -27,13 +27,13 @@ class RegisterPayment
     /**
      * @param EventManager $eventManager
      * @param OrderRepositoryInterface $orderRepository
-     * @param Session $checkoutSession
+     * @param CheckoutSession $checkoutSession
      * @param CartRepositoryInterface $quoteRepository
      */
     public function __construct(
         private EventManager $eventManager,
         private OrderRepositoryInterface $orderRepository,
-        private Session $checkoutSession,
+        private CheckoutSession $checkoutSession,
         private CartRepositoryInterface $quoteRepository
     ) {
     }
@@ -150,8 +150,8 @@ class RegisterPayment
      */
     public function setLastDataToSession(OrderInterface $order): void
     {
-        $this->checkoutSession->setLastQuoteId((int)$order->getQuoteId());
-        $this->checkoutSession->setLastSuccessQuoteId((int)$order->getQuoteId());
+        $this->checkoutSession->setLastQuoteId((int) $order->getQuoteId());
+        $this->checkoutSession->setLastSuccessQuoteId((int) $order->getQuoteId());
         $this->checkoutSession->setLastOrderId($order->getEntityId());
         $this->checkoutSession->setLastRealOrderId($order->getIncrementId());
         $this->checkoutSession->setLastOrderStatus($order->getStatus());

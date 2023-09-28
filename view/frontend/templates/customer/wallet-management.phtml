@@ -23,12 +23,13 @@ $formParameters = $block->getWalletParameters();
             'ecentricJs'
         ], function ($, ecentricJs) {
             $('#ecentric_submit').on('click', function () {
-                    var cardModel = {
+                    var walletModel = {
                         MerchantID: $("input[name=MerchantID]").val(),
                         UserID: $("input[name=UserID]").val(),
                         Checksum: $("input[name=Checksum]").val()
                     }
-                    ecentricJs.addCard(cardModel)
+
+                    ecentricJs.wallet(walletModel)
                 }
             )
         });

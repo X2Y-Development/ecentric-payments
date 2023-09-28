@@ -34,7 +34,9 @@ class Index implements CsrfAwareActionInterface
      */
     public function execute(): ResultInterface
     {
-        if ($this->request->isPost()) {
+        $content = $this->request->getContent() ?? '';
+
+        if (strlen($content) > 0) {
             $this->ecentricLogger->debug(__('Ecentric Wallet %1', $this->request->getContent()));
         }
 
