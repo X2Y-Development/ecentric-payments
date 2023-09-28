@@ -85,4 +85,8 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Magento\Framework\Session\SessionManager">
+        <plugin name="ecentric_payment_set_session_id_plugin" type="Ecentric\Payment\Plugin\SetSessionId"/>
+    </type>
 </config>
