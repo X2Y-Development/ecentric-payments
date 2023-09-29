@@ -11,6 +11,7 @@ namespace Ecentric\Payment\Plugin;
 use Ecentric\Payment\Model\CustomerSession;
 use Ecentric\Payment\Model\CustomerSessionFactory;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Session\SessionManager;
 
 class SetSessionId
@@ -18,10 +19,12 @@ class SetSessionId
     /**
      * @param RequestInterface $request
      * @param CustomerSessionFactory $customerSession
+     * @param EncryptorInterface $encryptor
      */
     public function __construct(
         private RequestInterface $request,
-        private CustomerSessionFactory $customerSession
+        private CustomerSessionFactory $customerSession,
+        private EncryptorInterface $encryptor
     ) {
     }
 
@@ -45,7 +48,7 @@ class SetSessionId
             $ssid = $customerSession->getCustomerSessionId() ?? null;
 
             if ($ssid) {
-                $_COOKIE['PHPSESSID'] = $ssid;
+                $_COOKIE['PHPSESSID'] = $this->encryptor->decrypt($ssid);
             }
         }
     }
