@@ -22,13 +22,12 @@ class Config
     public const XPATH_MERCHANT_GUID_LIVE = 'merchant_guid_live';
     public const XPATH_MERCHANT_KEY_SANDBOX = 'merchant_key_sandbox';
     public const XPATH_MERCHANT_KEY_LIVE = 'merchant_key_live';
-    public const XPATH_NEW_ORDER_STATUS = 'new_order_status';
     public const XPATH_ACTIVE = 'active';
     public const XPATH_PATTERN = 'payment/%s/general/%s';
     public const XPATH_GENERAL = 'payment/ecentric/general/';
     public const XPATH_API = 'payment/ecentric/api/';
-    public const HPP_LIVE = 'https://sandbox.ecentric.co.za/HPP'; // @TODO: get correct LIVE url!
-    public const HPP_TEST = 'https://sandbox.ecentric.co.za/HPP';
+    public const ECENTRIC_HPP_LIVE_URL = 'https://secure1.ecentricpaymentgateway.co.za/HPP';
+    public const ECENTRIC_HPP_SANDBOX_URL = 'https://sandbox.ecentric.co.za/HPP';
 
     /**
      * @param StoreManagerInterface $storeManager
@@ -74,7 +73,7 @@ class Config
      */
     public function getMerchantId(string $scope = ScopeInterface::SCOPE_WEBSITE): string
     {
-        if ($this->getApiMode() === MODE::SANDBOX) {
+        if ($this->getApiMode() === Mode::SANDBOX) {
             return $this->getApiGroupInfo(self::XPATH_MERCHANT_GUID_SANDBOX, $scope);
         }
 
@@ -87,7 +86,7 @@ class Config
      */
     public function getMerchantKey(string $scope = ScopeInterface::SCOPE_WEBSITE): string
     {
-        if ($this->getApiMode() === MODE::SANDBOX) {
+        if ($this->getApiMode() === Mode::SANDBOX) {
             return $this->getApiGroupInfo(self::XPATH_MERCHANT_KEY_SANDBOX, $scope);
         }
 
@@ -119,21 +118,6 @@ class Config
     }
 
     /**
-     * Get New Order Status
-     *
-     * @return string
-     * @throws NoSuchEntityException
-     */
-    public function getNewOrderStatus(): string
-    {
-        return (string)$this->getGeneralGroupInfo(
-            self::XPATH_NEW_ORDER_STATUS,
-            ScopeInterface::SCOPE_WEBSITE,
-            $this->storeManager->getStore()->getId()
-        );
-    }
-
-    /**
      * @return bool
      */
     private function isActiveMode(): bool
@@ -146,6 +130,6 @@ class Config
      */
     public function getApiUrl(): string
     {
-        return ($this->getApiMode() == Mode::PRODUCTION) ? self::HPP_LIVE : self::HPP_TEST;
+        return ($this->getApiMode() === Mode::LIVE) ? self::ECENTRIC_HPP_LIVE_URL : self::ECENTRIC_HPP_SANDBOX_URL;
     }
 }

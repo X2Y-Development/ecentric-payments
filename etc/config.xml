@@ -22,7 +22,7 @@
                     <new_order_status>pending</new_order_status>
                     <show_advanced_options>0</show_advanced_options>
                     <debug>0</debug>
-                    <allowspecific>1</allowspecific>
+                    <allowspecific>0</allowspecific>
                     <specificcountry>ZA</specificcountry>
                     <currency>ZAR</currency>
                     <is_gateway>0</is_gateway>
@@ -37,7 +37,7 @@
                     <allow_multiple_address>1</allow_multiple_address>
                 </general>
                 <model>EcentricPaymentGatewayFacade</model>
-                <title>Credit Card, MasterPass, EFT, RCS</title>
+                <title>Pay Now with Ecentric</title>
             </ecentric>
         </payment>
     </default>

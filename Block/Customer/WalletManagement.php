@@ -31,14 +31,6 @@ class WalletManagement extends Template
     }
 
     /**
-     * @return string
-     */
-    public function getWalletManagementUrl(): string
-    {
-        return $this->ecentricConfig->getApiUrl() . '/wallet/manage';
-    }
-
-    /**
      * @return array
      */
     public function getWalletParameters(): array
@@ -60,4 +52,11 @@ class WalletManagement extends Template
         ];
     }
 
+    /**
+     * @return string
+     */
+    public function getApiMode(): string
+    {
+        return $this->ecentricConfig->getApiMode();
+    }
 }

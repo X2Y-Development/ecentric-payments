@@ -91,14 +91,14 @@
                         <label>Merchant GUID</label>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                         <depends>
-                            <field id="mode">production</field>
+                            <field id="mode">live</field>
                         </depends>
                     </field>
                     <field id="merchant_key_live" translate="label" type="obscure" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Merchant Key</label>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                         <depends>
-                            <field id="mode">production</field>
+                            <field id="mode">live</field>
                         </depends>
                     </field>
                     <field id="merchant_guid_sandbox" translate="label" type="obscure" showInDefault="1" showInWebsite="1" showInStore="0">

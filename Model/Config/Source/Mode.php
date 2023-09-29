@@ -13,7 +13,7 @@ use Magento\Framework\Data\OptionSourceInterface;
 class Mode implements OptionSourceInterface
 {
     public const SANDBOX = 'sandbox';
-    public const PRODUCTION = 'production';
+    public const LIVE = 'live';
 
     /**
      * @inheritDoc
@@ -22,7 +22,7 @@ class Mode implements OptionSourceInterface
     {
         return [
             ['value' => self::SANDBOX, 'label' => __('Sandbox')],
-            ['value' => self::PRODUCTION, 'label' => __('Production')],
+            ['value' => self::LIVE, 'label' => __('Live')],
         ];
     }
 }

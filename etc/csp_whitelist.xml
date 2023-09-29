@@ -10,6 +10,7 @@
         <policy id="script-src">
             <values>
                 <value id="sandbox_ecentric_co_za" type="host">sandbox.ecentric.co.za</value>
+                <value id="secure_ecentric_payment_gateway_co_za" type="host">secure1.ecentricpaymentgateway.co.za</value>
             </values>
         </policy>
     </policies>
