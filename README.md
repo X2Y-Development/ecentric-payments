@@ -33,6 +33,11 @@ composer config repositories.ecentric vcs https://github.com/X2Y-Development/ece
 composer req ecentric/module-payment
 ```
 
+```sh
+php bin/magento setup:upgrade
+php bin/magento setup:di:compile
+php bin/magento setup:static-content:deploy -f
+```
 
 Configuration guide:
 -
