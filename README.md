@@ -23,7 +23,15 @@ After all commands ran successfully, congratulations, you've just installed Ecen
 
 ### Installation via composer
 
-TODO
+SSH into your Magento server, go to the webroot directory of your Magento installation and run:
+
+```sh
+composer config repositories.ecentric vcs https://github.com/X2Y-Development/ecentric-payments
+```
+
+```sh
+composer req ecentric/module-payment
+```
 
 
 Configuration guide:
