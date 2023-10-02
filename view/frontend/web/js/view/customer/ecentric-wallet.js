@@ -20,23 +20,16 @@ define([
          */
         _create: function () {
             let self = this;
-            $('#ecentric_submit').bind('click', function () {
-                    let ecentricJs;
-                    let walletModel = {
-                        MerchantID: self.options.merchantId,
-                        UserID: self.options.userId,
-                        Checksum: self.options.checksum
-                    };
-
-                    if (self.options.mode === 'sandbox') {
-                        ecentricJs = ecentricSandboxJs;
-                    } else {
-                        ecentricJs = ecentricLiveJs
-                    }
-
-                    ecentricJs.wallet(walletModel)
-                }
-            )
+            this.element.on('click', function () {
+                let ecentricJs,
+                    walletModel = {
+                    MerchantID: self.options.merchantId,
+                    UserID: self.options.userId,
+                    Checksum: self.options.checksum
+                };
+                ecentricJs = (self.options.mode === 'sandbox') ? ecentricSandboxJs : ecentricLiveJs;
+                ecentricJs.wallet(walletModel);
+            });
         }
     });
 

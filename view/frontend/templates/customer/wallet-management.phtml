@@ -15,7 +15,7 @@ $formParameters = $block->getWalletParameters();
     <button id="ecentric_submit" class="action primary"><?= __('Manage Your Wallet') ?></button>
     <script type="text/x-magento-init">
         {
-            "*": {
+            "#ecentric_submit": {
                 "ecentricCustomerWallet": {
                     "mode": "<?= $escaper->escapeJs($block->getApiMode()) ?>",
                     "merchantId": "<?= $escaper->escapeJs($formParameters['MerchantID']) ?>",
