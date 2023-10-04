@@ -17,6 +17,7 @@ use Magento\Store\Model\StoreManagerInterface;
 class Config
 {
     public const METHOD_CODE = 'ecentric';
+    public const DEFAULT_CURRENCY_CODE = 'ZAR';
     public const XPATH_MODE = 'mode';
     public const XPATH_MERCHANT_GUID_SANDBOX = 'merchant_guid_sandbox';
     public const XPATH_MERCHANT_GUID_LIVE = 'merchant_guid_live';

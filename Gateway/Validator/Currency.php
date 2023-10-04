@@ -37,9 +37,13 @@ class Currency extends AbstractValidator
     {
         $currencies = $this->ecentricConfig->getGeneralGroupInfo(
             'currency',
-            ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_WEBSITE,
             $this->storeManager->getStore()->getId()
         );
+
+        if ($currencies === null) {
+            $currencies = EcentricConfig::DEFAULT_CURRENCY_CODE;
+        }
 
         return $this->createResult(in_array($validationSubject['currency'], explode(',', $currencies)));
     }

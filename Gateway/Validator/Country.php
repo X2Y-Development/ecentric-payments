@@ -39,14 +39,14 @@ class Country extends AbstractValidator
 
         $allowSpecific = $this->ecentricConfig->getGeneralGroupInfo(
             'allowspecific',
-            ScopeInterface::SCOPE_STORE,
+            ScopeInterface::SCOPE_WEBSITE,
             $storeId
         );
 
         if ($allowSpecific == 1) {
             $countries = $this->ecentricConfig->getGeneralGroupInfo(
                 'specificcountry',
-                ScopeInterface::SCOPE_STORE,
+                ScopeInterface::SCOPE_WEBSITE,
                 $storeId
             ) ?? '';
 
