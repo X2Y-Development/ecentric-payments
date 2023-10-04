@@ -42,7 +42,7 @@ class Currency extends AbstractValidator
         );
 
         if ($currencies === null) {
-            $this->createResult(true);
+            return $this->createResult(true);
         }
 
         return $this->createResult(in_array($validationSubject['currency'], explode(',', $currencies)));
